@@ -1,0 +1,219 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Ahmed Ali",
+      "phone": "+1-202-555-0147",
+      "email": "ahmed.ali@example.com",
+      "gender": "Male",
+      "cups": 3,
+      "amount": 45.5,
+      "paymentMethod": "Cash",
+      "cupperName": "John Smith",
+      "notes": "Prefers morning appointments",
+      "reminder": "2025-11-18",
+      "total_sessions": 12,
+      "total_spent_aed": 1450,
+      "last_visit_date": "2025-11-10",
+      "session_history": [
+        {
+          "session_number": 12,
+          "date": "2025-11-10",
+          "service": "Cupping Therapy",
+          "duration": "45 min",
+          "price": 100
+        },
+        {
+          "session_number": 11,
+          "date": "2025-10-28",
+          "service": "Full Body Hijama",
+          "duration": "60 min",
+          "price": 150
+        },
+        {
+          "session_number": 10,
+          "date": "2025-10-15",
+          "service": "Back Hijama",
+          "duration": "30 min",
+          "price": 80
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Fatima Hassan",
+      "phone": "+91-303-555-0192",
+      "email": "fatima.h@example.com",
+      "gender": "Female",
+      "cups": 1,
+      "amount": 15.0,
+      "paymentMethod": "Credit Card",
+      "cupperName": "Emma Brown",
+      "notes": "",
+      "reminder": "2025-11-19",
+      "total_sessions": 5,
+      "total_spent_aed": 500,
+      "last_visit_date": "2025-11-12",
+      "session_history": [
+        {
+          "session_number": 5,
+          "date": "2025-11-12",
+          "service": "Cupping Therapy",
+          "duration": "45 min",
+          "price": 100
+        },
+        {
+          "session_number": 4,
+          "date": "2025-10-05",
+          "service": "Cupping Therapy",
+          "duration": "45 min",
+          "price": 100
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Mohammed Said",
+      "phone": "+91-404-555-0123",
+      "email": "mohammed.said@example.com",
+      "gender": "Male",
+      "cups": 2,
+      "amount": 30.75,
+      "paymentMethod": "Mobile Payment",
+      "cupperName": "James Davis",
+      "notes": "Allergic to certain herbs",
+      "reminder": "2025-11-20",
+      "total_sessions": 8,
+      "total_spent_aed": 960,
+      "last_visit_date": "2025-11-01",
+      "session_history": [
+        {
+          "session_number": 8,
+          "date": "2025-11-01",
+          "service": "Back Hijama",
+          "duration": "30 min",
+          "price": 120
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "David Kim",
+      "phone": "+91-505-555-0178",
+      "email": "david.kim@example.com",
+      "gender": "Male",
+      "cups": 4,
+      "amount": 60.0,
+      "paymentMethod": "Cash",
+      "cupperName": "Olivia Martinez",
+      "notes": "Prefers evening sessions",
+      "reminder": "2025-11-21",
+      "total_sessions": 4,
+      "total_spent_aed": 240,
+      "last_visit_date": "2025-10-25",
+      "session_history": []
+    },
+    {
+      "id": 5,
+      "name": "Emily Clark",
+      "phone": "+1-606-555-0110",
+      "email": "emily.clark@example.com",
+      "gender": "Female",
+      "cups": 3,
+      "amount": 45.0,
+      "paymentMethod": "Credit Card",
+      "cupperName": "Sophia Wilson",
+      "notes": "",
+      "reminder": "2025-11-22",
+      "total_sessions": 3,
+      "total_spent_aed": 135,
+      "last_visit_date": "2025-11-05",
+      "session_history": []
+    },
+    {
+      "id": 6,
+      "name": "Frank Harris",
+      "phone": "+1-707-555-0144",
+      "email": "frank.h@example.com",
+      "gender": "Male",
+      "cups": 2,
+      "amount": 25.5,
+      "paymentMethod": "Cash",
+      "cupperName": "Liam Johnson",
+      "notes": "Prefers weekends",
+      "reminder": "2025-11-23",
+      "total_sessions": 6,
+      "total_spent_aed": 450,
+      "last_visit_date": "2025-11-15",
+      "session_history": []
+    },
+    {
+      "id": 7,
+      "name": "Grace Thompson",
+      "phone": "+1-808-555-0195",
+      "email": "grace.t@example.com",
+      "gender": "Female",
+      "cups": 1,
+      "amount": 12.0,
+      "paymentMethod": "Mobile Payment",
+      "cupperName": "Ethan Martinez",
+      "notes": "",
+      "reminder": "2025-11-24",
+      "total_sessions": 2,
+      "total_spent_aed": 80,
+      "last_visit_date": "2025-10-30",
+      "session_history": []
+    },
+    {
+      "id": 8,
+      "name": "Henry Moore",
+      "phone": "+1-909-555-0133",
+      "email": "henry.m@example.com",
+      "gender": "Male",
+      "cups": 5,
+      "amount": 75.0,
+      "paymentMethod": "Credit Card",
+      "cupperName": "Mia Anderson",
+      "notes": "Prefers morning sessions",
+      "reminder": "2025-11-25",
+      "total_sessions": 10,
+      "total_spent_aed": 1200,
+      "last_visit_date": "2025-11-18",
+      "session_history": []
+    },
+    {
+      "id": 9,
+      "name": "Isabella Scott",
+      "phone": "+1-101-555-0167",
+      "email": "isabella.s@example.com",
+      "gender": "Female",
+      "cups": 3,
+      "amount": 45.5,
+      "paymentMethod": "Cash",
+      "cupperName": "Noah Thomas",
+      "notes": "",
+      "reminder": "2025-11-26",
+      "total_sessions": 7,
+      "total_spent_aed": 850,
+      "last_visit_date": "2025-11-10",
+      "session_history": []
+    },
+    {
+      "id": 10,
+      "name": "Jack Wilson",
+      "phone": "+1-202-555-0188",
+      "email": "jack.w@example.com",
+      "gender": "Male",
+      "cups": 2,
+      "amount": 30.0,
+      "paymentMethod": "Mobile Payment",
+      "cupperName": "Ava Lee",
+      "notes": "Allergic to certain oils",
+      "reminder": "2025-11-27",
+      "total_sessions": 5,
+      "total_spent_aed": 400,
+      "last_visit_date": "2025-11-12",
+      "session_history": []
+    }
+  ]
+}

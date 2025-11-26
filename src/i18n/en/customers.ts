@@ -1,0 +1,36 @@
+export default {
+  customers: {
+    title: "Customers",
+    info_title: "Customer Info",
+    total_sessions: "Total Sessions",
+    total_spent: "Total Spent",
+    last_visit: "Last Visit",
+    session_history: "Session History",
+    no_session_history: "No session history available.",
+    add_new_customer_title: "Add New Customer",
+    edit_customer_title: "Edit Customer",
+    add_customer_btn: "Add Customer",
+
+    table: {
+      session: "Session",
+      date: "Date",
+      service: "Service",
+      duration: "Duration",
+      price: "Price",
+      columns: {
+        name: "Name",
+        phone: "Phone Number",
+        gender: "Gender",
+        cups: "Number of Cups",
+        amount: "Amount",
+        paymentMethod: "Payment Method",
+        cupperName: "Cupper Name",
+        notes: "Notes",
+        reminder: "Reminder",
+      },
+      sampleModal: "Sample Modal",
+      confirmModal: "Please confirm",
+      pageInfo: "Page {current} of {total}",
+    },
+  },
+};

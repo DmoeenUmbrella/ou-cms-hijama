@@ -1,0 +1,49 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin@clinic.com",
+      "phone": "+971 50 000 0000",
+      "role": 1,
+      "isActive": true
+    },
+    {
+      "id": 2,
+      "firstName": "Dr. Zaki",
+      "lastName": "Ahmed",
+      "email": "zaki@clinic.com",
+      "phone": "+971 50 123 4567",
+      "role": 2,
+      "isActive": true
+    },
+    {
+      "id": 3,
+      "firstName": "Sarah",
+      "lastName": "Connor",
+      "email": "sarah@clinic.com",
+      "phone": "+971 52 987 6543",
+      "role": 2,
+      "isActive": false
+    },
+    {
+      "id": 4,
+      "firstName": "Dr. Salman",
+      "lastName": "Ahmed",
+      "email": "zaki@clinic.com",
+      "phone": "+971 50 123 4567",
+      "role": 3,
+      "isActive": true
+    },
+    {
+      "id": 5,
+      "firstName": "Dr. Haleema",
+      "lastName": "Sadia",
+      "email": "sarah@clinic.com",
+      "phone": "+971 52 987 6543",
+      "role": 3,
+      "isActive": false
+    }
+  ]
+}

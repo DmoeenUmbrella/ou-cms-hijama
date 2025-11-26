@@ -1,0 +1,23 @@
+{
+  "data": {
+    "appointments": {
+      "2025-10-01": { "totalAppointment": 5, "activeClients": 2, "totalSessions": 6 },
+      "2025-10-05": { "totalAppointment": 8, "activeClients": 4, "totalSessions": 10 },
+      "2025-10-12": { "totalAppointment": 12, "activeClients": 6, "totalSessions": 15 },
+      "2025-10-20": { "totalAppointment": 10, "activeClients": 5, "totalSessions": 12 },
+      "2025-10-28": { "totalAppointment": 15, "activeClients": 8, "totalSessions": 18 },
+
+      "2025-11-02": { "totalAppointment": 8, "activeClients": 3, "totalSessions": 9 },
+      "2025-11-08": { "totalAppointment": 14, "activeClients": 7, "totalSessions": 16 },
+      "2025-11-15": { "totalAppointment": 20, "activeClients": 10, "totalSessions": 25 },
+      "2025-11-22": { "totalAppointment": 18, "activeClients": 9, "totalSessions": 22 },
+      "2025-11-29": { "totalAppointment": 12, "activeClients": 6, "totalSessions": 15 },
+
+      "2025-12-01": { "totalAppointment": 10, "activeClients": 5, "totalSessions": 12 },
+      "2025-12-05": { "totalAppointment": 22, "activeClients": 11, "totalSessions": 28 },
+      "2025-12-10": { "totalAppointment": 15, "activeClients": 7, "totalSessions": 18 },
+      "2025-12-15": { "totalAppointment": 25, "activeClients": 12, "totalSessions": 30 },
+      "2025-12-20": { "totalAppointment": 30, "activeClients": 15, "totalSessions": 35 }
+    }
+  }
+}

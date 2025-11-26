@@ -1,0 +1,43 @@
+export default {
+  appointment: {
+    title: "تقويم المواعيد",
+    subtitle: "إدارة وتتبع جميع مواعيد العيادة",
+    new_btn: "موعد جديد",
+    select_date: "اختيار التاريخ",
+    list_title: "المواعيد",
+    details: "تفاصيل الموعد",
+    create_label: "إنشاء موعد جديد",
+    new_title: "موعد جديد",
+    client_name: "اسم العميل",
+    service_type: "نوع الخدمة",
+    date: "التاريخ",
+    time: "الوقت",
+    duration: "المدة (بالدقائق)",
+    notes: "ملاحظات",
+    notes_placeholder: "أضف أي احتياجات أو تعليمات خاصة...",
+    create: "إنشاء موعد",
+    edit_title: "تحرير الموعد",
+    view_details_title: "تفاصيل الموعد",
+    delete_appointment_note: "هل تأكدت من حذف موعد",
+    delete_appointment: "حذف الموعد",
+    cancel_appointment: "إلغاء الموعد",
+    trending_up: "اتجاه تصاعدي",
+    trending_down: "اتجاه هبوطي",
+
+    table: {
+      client: "العميل",
+      service: "الخدمة",
+      time: "الوقت",
+      duration: "المدة",
+      price: "السعر",
+      status: "الحالة",
+      date: "التاريخ",
+    },
+
+    status: {
+      upcoming: "قادم",
+      completed: "مكتمل",
+      cancelled: "ألغيت",
+    },
+  },
+};
