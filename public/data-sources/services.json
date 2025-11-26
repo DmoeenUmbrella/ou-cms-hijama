@@ -1,0 +1,32 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Cupping Therapy",
+      "duration_minutes": 45,
+      "price_aed": 100,
+      "description": "Standard wet or dry cupping session."
+    },
+    {
+      "id": 2,
+      "name": "Full Body Hijama",
+      "duration_minutes": 90,
+      "price_aed": 300,
+      "description": "Comprehensive full-body hijama session."
+    },
+    {
+      "id": 3,
+      "name": "Back Hijama",
+      "duration_minutes": 60,
+      "price_aed": 150,
+      "description": "Targeted hijama for back pain and muscle relief."
+    },
+    {
+      "id": 4,
+      "name": "Shoulder Hijama",
+      "duration_minutes": 30,
+      "price_aed": 80,
+      "description": "Focused relief for shoulder and neck tension."
+    }
+  ]
+}

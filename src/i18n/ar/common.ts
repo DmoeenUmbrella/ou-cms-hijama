@@ -1,0 +1,80 @@
+export default {
+    app: {
+        title: "نظام الحجامة",
+        customers: "العملاء",
+        appointments: "المواعيد",
+        promotions: "العروض",
+        logout: "تسجيل الخروج"
+    },
+    form: {
+        name: "الاسم",
+        phone: "الهاتف",
+        email: "البريد الإلكتروني",
+        description: "الوصف",
+    },
+    button: {
+        save: "حفظ",
+        cancel: "إلغاء",
+        delete: "حذف",
+        actions: "الإجراءات",
+        update: "تحديث",
+        import: "استيراد",
+    },
+    login: {
+        login: 'تسجيل الدخول',
+        password: 'كلمة المرور',
+        remember: 'تذكرني',
+        pleaseEnterLogin: 'الرجاء إدخال اسم المستخدم',
+        pleaseEnterPassword: 'الرجاء إدخال كلمة المرور',
+        back: 'عودة',
+    },
+    nav: {
+        searchPlaceholder: 'ابحث (ctrl+k)',
+        toggleDark: 'تبديل الوضع الداكن',
+        logout: 'تسجيل الخروج',
+        sampleMenu: 'قائمة تجريبية',
+        itemOne: 'البند الأول',
+        itemTwo: 'البند الثاني',
+        itemLast: 'البند الأخير',
+        myProfile: 'ملفي الشخصي',
+        settings: 'الإعدادات',
+        messages: 'الرسائل',
+        github: 'GitHub',
+        reactVersion: 'نسخة React',
+        translate: 'اللغة',
+        arabic: 'العربية',
+        english: 'الإنجليزية',
+    },
+    aside: {
+        title: "القائمة الرئيسية",
+        dashboard: 'لوحة التحكم',
+        customers: 'العملاء',
+        appointments: 'المواعيد',
+        services: 'الخدمات',
+        sessions: 'الجلسات',
+        users: 'المستخدمون',
+    },
+    footer: {
+        promo: 'احصل على المزيد مع',
+    },
+    validation: {
+        required: "هذا الحقل مطلوب",
+        numeric: "يجب أن تكون القيمة رقمًا",
+        text: "يجب أن تكون القيمة نصًا",
+        greater_than: "يجب أن يكون أكبر من {value}",
+        min_length: "يجب أن يحتوي على {count} أحرف على الأقل",
+        invalid: "قيمة غير صالحة",
+        invalid_date: "يجب أن تكون القيمة تاريخًا صالحًا",
+        invalid_time: "يجب أن تكون القيمة وقتًا صالحًا",
+        check_errors: "يرجى التحقق من النموذج بحثًا عن أخطاء.",
+        invalid_email: "أدخل عنوان بريد إلكتروني صالح",
+        password: {
+            missing_lower: "حرف صغير واحد",
+            missing_upper: "حرف كبير واحد",
+            missing_number: "رقم واحد",
+            missing_special: "رمز خاص واحد",
+            prefix: "يجب أن تحتوي كلمة المرور على "
+        }
+    },
+    companyName: "عيادة يوسف المطلعي الطبية"
+};
