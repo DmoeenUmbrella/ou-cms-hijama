@@ -1,162 +1,86 @@
-<script setup>
-import { onMounted, computed, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { useCustomersStore } from '@/stores/useCustomersStore.js'
-import SectionTitleLineWithButton from '@/components/ui/SectionTitleLineWithButton.vue'
-import SectionMain from '@/components/ui/SectionMain.vue'
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { ArrowLeft, User } from 'lucide-vue-next'
+// import { Toast } from '@/lib/toast'
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
-import CardBox from '@/components/ui/CardBox.vue'
-import BaseIcon from '@/components/base/BaseIcon.vue'
-import { mdiAccountDetails, mdiCalendarClock, mdiCash, mdiPhone, mdiEmail } from '@mdi/js'
-import numeral from 'numeral'
+import CustomerInfoCard from '@/modules/customer/components/CustomerInfoCard.vue'
+import SessionHistoryTable from '@/modules/customer/components/SessionHistoryTable.vue'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useCustomer } from '@/modules/customer/composables/customer.composable'
 
-const { t, locale } = useI18n()
-const route = useRoute()
-const customersStore = useCustomersStore()
+const props = defineProps<{
+  id: string
+}>()
 
-// Function to trigger the fetch
-const fetchClient = (id) => {
-    if (id) {
-        // The store handles checking if the client list is loaded before fetching the detail
-        customersStore.fetchClientDetails(parseInt(id))
-    }
+const router = useRouter()
+const { currentCustomer, isLoading, fetchCustomerDetails } = useCustomer()
+
+onMounted(async () => {
+  try {
+    await fetchCustomerDetails(props.id)
+  } catch (error: any) {
+    // Toast.error(error.message || 'Failed to fetch customer details')
+  }
+})
+
+const goBack = () => {
+  router.back()
 }
-
-// 1. Fetch on initial mount
-onMounted(() => {
-    fetchClient(route.params.id)
-})
-
-// 2. Watch for route changes (e.g. navigating from Client A to Client B)
-watch(() => route.params.id, (newId) => {
-    fetchClient(newId)
-})
-
-// Use computed property to reactively get data from the store
-const client = computed(() => customersStore.selectedClient)
-const history = computed(() => client.value?.session_history || [])
-
-// Helper to get initials for the avatar
-const clientInitials = computed(() => {
-    if (!client.value?.name) return '??'
-    return client.value.name.match(/\b(\w)/g).join('').substring(0, 2).toUpperCase()
-})
 </script>
 
 <template>
-    <LayoutAuthenticated>
-        <SectionMain>
-            <!-- Main Content (Two Columns) -->
-            <div v-if="client" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <LayoutAuthenticated>
+    <div class="flex-1 space-y-4 p-4 md:p-8 pt-6">
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <Button variant="ghost" size="icon" @click="goBack">
+            <ArrowLeft class="h-5 w-5" />
+          </Button>
+          <div class="flex items-center gap-2">
+            <User class="h-8 w-8" />
+            <h2 class="text-3xl font-bold tracking-tight">Customer Details</h2>
+          </div>
+        </div>
+      </div>
 
-                <!-- Left Column: Customer Info Summary -->
-                <div class="lg:col-span-1">
-                    <CardBox :title="t('info_title')"
-                        bgClass="hover:bg-gray-100 transition-all duration-300 ease-in-out border shadow-md">
-                        <SectionTitleLineWithButton :title="t('info_title')" no-icon />
-                        <!-- Profile Card Header -->
-                        <div class="flex flex-col items-center text-center mb-6">
-                            <div
-                                class="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center font-bold text-3xl text-emerald-600 mb-4 dark:bg-emerald-900 dark:text-emerald-200">
-                                {{ clientInitials }}
-                            </div>
-                            <h3 class="font-bold text-xl">{{ client.name }}</h3>
+      <!-- Loading State -->
+      <div v-if="isLoading" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100"></div>
+      </div>
 
-                            <div class="flex items-center justify-center mt-2 text-gray-500 text-sm">
-                                <BaseIcon :path="mdiPhone" w="w-4" h="h-4" class="mr-1" />
-                                {{ client.phone }}
-                            </div>
-                            <div class="flex items-center justify-center mt-1 text-gray-500 text-sm"
-                                v-if="client.email">
-                                <BaseIcon :path="mdiEmail" w="w-4" h="h-4" class="mr-1" />
-                                {{ client.email }}
-                            </div>
-                        </div>
+      <!-- Customer Details -->
+      <div v-else-if="currentCustomer" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left Column - Customer Info Card -->
+        <div class="lg:col-span-1">
+          <CustomerInfoCard :customer="currentCustomer" />
+        </div>
 
-                        <hr class="my-6 border-gray-100 dark:border-slate-700">
+        <!-- Right Column - Session History -->
+        <div class="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Session History</CardTitle>
+              <CardDescription>
+                Complete history of all sessions for this customer
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <SessionHistoryTable :sessions="currentCustomer.appointments" />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
-                        <!-- Summary Stats -->
-                        <div class="space-y-4">
-                            <!-- Total Sessions -->
-                            <div class="flex items-center justify-between">
-                                <span class="flex items-center text-gray-600 dark:text-gray-400">
-                                    <BaseIcon :path="mdiCalendarClock" w="w-5" h="h-5" class="mr-3 text-blue-500" />
-                                    {{ t('total_sessions') }}
-                                </span>
-                                <span class="font-bold text-lg">{{ client.total_sessions }}</span>
-                            </div>
-
-                            <!-- Total Spent -->
-                            <div class="flex items-center justify-between">
-                                <span class="flex items-center text-gray-600 dark:text-gray-400">
-                                    <BaseIcon :path="mdiCash" w="w-5" h="h-5" class="mr-3 text-emerald-500" />
-                                    {{ t('total_spent') }}
-                                </span>
-                                <span class="font-bold text-lg text-emerald-600 dark:text-emerald-400">
-                                    {{ numeral(client.total_spent_aed).format('0,0') }} AED
-                                </span>
-                            </div>
-
-                            <!-- Last Visit -->
-                            <div class="flex items-center justify-between">
-                                <span class="flex items-center text-gray-600 dark:text-gray-400">
-                                    <BaseIcon :path="mdiCalendarClock" w="w-5" h="h-5" class="mr-3 text-purple-500" />
-                                    {{ t('last_visit') }}
-                                </span>
-                                <span class="font-bold text-lg">{{ client.last_visit_date }}</span>
-                            </div>
-                        </div>
-
-                    </CardBox>
-                </div>
-
-                <!-- Right Column: Session History Table -->
-                <div class="lg:col-span-2 border px-6 rounded-2xl">
-                    <CardBox :title="t('session_history')" has-table>
-                        <SectionTitleLineWithButton :title="t('session_history')" no-icon />
-
-                        <div v-if="history.length === 0" class="p-8 text-center text-gray-500">
-                            {{ $t('no_session_history') }}
-                        </div>
-
-                        <div v-else class="overflow-x-auto relative border rounded-md">
-                            <table class="min-w-full border-collapse table-auto">
-                                <thead class="bg-gray-100 dark:bg-slate-700 sticky top-0 z-10">
-                                    <tr>
-                                        <th class="p-4 rounded-tl-lg">{{ t('table.session') }}</th>
-                                        <th class="p-4">{{ t('table.date') }}</th>
-                                        <th class="p-4">{{ t('table.service') }}</th>
-                                        <th class="p-4 text-right">{{ t('table.duration') }}</th>
-                                        <th class="p-4 rounded-tr-lg text-right">{{ t('table.price') }}
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="session in history" :key="session.session_number"
-                                        class="bg-white border-b dark:bg-slate-800 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700">
-                                        <td class="p-4 font-medium text-gray-900 dark:text-white">
-                                            #{{ session.session_number }}
-                                        </td>
-                                        <td class="p-4">{{ session.date }}</td>
-                                        <td class="p-4">{{ session.service }}</td>
-                                        <td class="p-4 text-right">{{ session.duration }}</td>
-                                        <td class="p-4 text-right font-bold text-emerald-600">
-                                            {{ numeral(session.price).format('0,0') }} AED
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </CardBox>
-                </div>
-            </div>
-
-            <!-- Loading State -->
-            <div v-else class="flex justify-center p-12">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-            </div>
-
-        </SectionMain>
-    </LayoutAuthenticated>
+      <!-- Error State -->
+      <Card v-else>
+        <CardContent class="flex justify-center items-center py-12">
+          <p class="text-muted-foreground">Customer not found</p>
+        </CardContent>
+      </Card>
+    </div>
+  </LayoutAuthenticated>
 </template>

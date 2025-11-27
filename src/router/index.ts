@@ -2,14 +2,14 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router"
 import { authRoutes } from "./routes/auth";
 import { dashboardRoutes } from "./routes/dashboard";
 import { authGuard } from "./guards";
-// import { customerRoutes } from "./routes/customers";
+import { customerRoutes } from "./routes/customers";
 // import { appointmentRoutes } from "./routes/appointments";
 // import { adminRoutes } from "./routes/admin";
 
 export const routes: RouteRecordRaw[] = [
   ...authRoutes,
   ...dashboardRoutes,
-  // ...customerRoutes,
+  ...customerRoutes,
   // ...appointmentRoutes,
   // ...adminRoutes,
   // 404 Fallback
