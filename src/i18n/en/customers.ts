@@ -11,6 +11,11 @@ export default {
     edit_customer_title: "Edit Customer",
     add_customer_btn: "Add Customer",
 
+    information: "Patient Information",
+    dob: "Date of Birth",
+    medical_notes: "Medical Notes",
+    medical_notes_placeholder: "Any relevant medical history...",
+
     table: {
       session: "Session",
       date: "Date",
@@ -27,6 +32,8 @@ export default {
         cupperName: "Cupper Name",
         notes: "Notes",
         reminder: "Reminder",
+        total_sessions: "Total sessions",
+        last_visit: "Last session",
       },
       sampleModal: "Sample Modal",
       confirmModal: "Please confirm",

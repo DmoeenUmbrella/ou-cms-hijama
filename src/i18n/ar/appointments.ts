@@ -7,6 +7,7 @@ export default {
     list_title: "المواعيد",
     details: "تفاصيل الموعد",
     create_label: "إنشاء موعد جديد",
+    edit_label: "تعديل الموعد",
     new_title: "موعد جديد",
     client_name: "اسم العميل",
     service_type: "نوع الخدمة",
@@ -23,8 +24,16 @@ export default {
     cancel_appointment: "إلغاء الموعد",
     trending_up: "اتجاه تصاعدي",
     trending_down: "اتجاه هبوطي",
+    no_appointments_found: "لا توجد مواعيد لعرضها",
+    viewing_appointment_for: "عرض المواعيد لـعرض المواعيد",
+    filter_by_date: "تصفية حسب التاريخ",
+    search_placeholder: "البحث عن مريض",
 
+    // Table/View Actions
     table: {
+      create_session: "إنشاء جلسة",
+      create_follow_up: "جدولة متابعة",
+      view_details: "عرض سجل المريض",
       client: "العميل",
       service: "الخدمة",
       time: "الوقت",
@@ -32,6 +41,7 @@ export default {
       price: "السعر",
       status: "الحالة",
       date: "التاريخ",
+      edit_patient: "تحرير المريض",
     },
 
     status: {
