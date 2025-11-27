@@ -5,5 +5,5 @@ import { Toaster } from './components/ui/sonner';
 
 <template>
   <RouterView />
-  <Toaster />
+  <Toaster rich-colors position="top-right" />
 </template>

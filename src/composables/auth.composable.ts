@@ -57,12 +57,10 @@ export function useAuth() {
       if (!token) {
         return Promise.resolve(); // Nothing to invalidate on server if no token
       }
-      debugger
       return authMutations.logoutUser(token);
     },
     onSettled: () => {
       // We clear local state regardless of server success/fail
-      debugger
       authStore.logout();
       toast.info("Logged out successfully");
       initiateLogin();
@@ -71,7 +69,6 @@ export function useAuth() {
 
   const logout = () => {
     performLogout();
-    debugger
   };
 
   return {
