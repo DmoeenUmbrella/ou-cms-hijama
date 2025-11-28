@@ -52,6 +52,7 @@ const handleDeleteUser = async (user: any) => {
     try {
       await removeUser(user.id)
       toast.success(t('users.deleted_successfully'))
+      await fetchUsers()
     } catch (error: any) {
       toast.error(error.message || 'Failed to delete user')
     }
@@ -101,6 +102,7 @@ const handleFormSubmit = async (data: UserFormData) => {
         id: data.id!,
         firstName: data.firstName,
         lastName: data.lastName,
+        allowedScreens: ['string'], // Default value as per API requirement
         phoneNumber: data.phoneNumber,
         profileUrl: data.profileUrl || '',
       }
@@ -108,6 +110,9 @@ const handleFormSubmit = async (data: UserFormData) => {
       await editUser(payload)
       toast.success(t('users.updated_successfully'))
     }
+    
+    // Refresh users list to get latest records
+    await fetchUsers()
     
     // Close dialog after successful submission
     isFormDialogOpen.value = false
