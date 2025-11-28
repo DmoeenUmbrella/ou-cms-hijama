@@ -7,7 +7,21 @@ import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+
+// Helper function to convert numbers to Arabic numerals
+const toArabicNumerals = (num: number | string): string => {
+  if (locale.value !== 'ar') return num.toString()
+  
+  const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
+  return num.toString().split('').map(digit => {
+    const parsed = parseInt(digit)
+    return isNaN(parsed) ? digit : arabicNumerals[parsed]
+  }).join('')
+}
+
+// Computed property for RTL
+const isRTL = computed(() => locale.value === 'ar')
 
 const props = defineProps<{
   sessions: Appointment[]
@@ -24,12 +38,12 @@ const emit = defineEmits<{
 const formattedSessions = computed(() => {
   return props.sessions.map(session => ({
     id: session.id,
-    sessionNumber: `#${session.id}`,
+    sessionNumber: `#${toArabicNumerals(session.id)}`,
     date: format(new Date(session.date), 'yyyy-MM-dd'),
     service: session.notes || 'Hijama Session',
     duration: '-', // API doesn't provide duration
-    price: session.price,
-    numberOfCups: session.numberOfCups,
+    price: toArabicNumerals(session.price),
+    numberOfCups: toArabicNumerals(session.numberOfCups),
     notes: session.notes
   }))
 })
@@ -91,12 +105,12 @@ const handleNextPage = () => {
     <div v-if="!isLoading && totalAppointments > 0" class="flex items-center justify-between px-4 py-4 border-t">
       <div class="text-sm text-muted-foreground">
         {{ t('customers.table.showing', { 
-          from: ((currentPage - 1) * itemsPerPage) + 1, 
-          to: Math.min(currentPage * itemsPerPage, totalAppointments),
-          total: totalAppointments 
+          from: toArabicNumerals(((currentPage - 1) * itemsPerPage) + 1), 
+          to: toArabicNumerals(Math.min(currentPage * itemsPerPage, totalAppointments)),
+          total: toArabicNumerals(totalAppointments)
         }) }}
       </div>
-      <div class="flex items-center gap-2">
+      <div :class="['flex items-center gap-2', isRTL ? 'flex-row-reverse' : 'flex-row']">
         <Button
           variant="outline"
           size="sm"
@@ -107,7 +121,7 @@ const handleNextPage = () => {
           {{ t('customers.table.previous') }}
         </Button>
         <div class="text-sm font-medium">
-          {{ t('customers.table.page_of', { current: currentPage, total: totalPages }) }}
+          {{ t('customers.table.page_of', { current: toArabicNumerals(currentPage), total: toArabicNumerals(totalPages) }) }}
         </div>
         <Button
           variant="outline"

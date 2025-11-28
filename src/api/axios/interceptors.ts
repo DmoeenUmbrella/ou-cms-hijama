@@ -19,7 +19,6 @@ export function setupInterceptors(instance: AxiosInstance) {
     (error) => Promise.reject(error)
   );
 
-  debugger
   // Response Interceptor
   instance.interceptors.response.use(
     (response) => response,

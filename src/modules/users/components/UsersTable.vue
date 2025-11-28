@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Pencil, Trash2, Search } from 'lucide-vue-next'
-import { useTechnician } from '../composables/useTechnician'
+import { useUser } from '../composables/useUser'
 import {
   Table,
   TableBody,
@@ -30,12 +30,12 @@ const isRTL = computed(() => locale.value === 'ar')
 const alignEnd = computed(() => isRTL.value ? 'text-left' : 'text-right')
 
 const { 
-  technicians, 
+  users, 
   paginationInfo, 
   isLoading, 
   goToPage, 
-  searchTechnicians 
-} = useTechnician()
+  searchUsers 
+} = useUser()
 
 // Search state
 const searchKeyword = ref('')
@@ -44,8 +44,8 @@ const searchTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 // Selected rows
 const selectedRows = ref<number[]>([])
 
-// Get technicians from composable
-const allTechnicians = computed(() => technicians.value)
+// Get users from composable
+const allUsers = computed(() => users.value)
 const currentPage = computed(() => paginationInfo.value.currentPage)
 const totalPages = computed(() => paginationInfo.value.totalPages)
 const totalCount = computed(() => paginationInfo.value.totalCount)
@@ -54,7 +54,7 @@ const itemsPerPage = computed(() => paginationInfo.value.itemsPerPage)
 // Toggle all rows selection
 const toggleAll = (checked: boolean) => {
   if (checked) {
-    selectedRows.value = allTechnicians.value.map(technician => technician.id)
+    selectedRows.value = allUsers.value.map(user => user.id)
   } else {
     selectedRows.value = []
   }
@@ -71,8 +71,8 @@ const toggleRow = (id: number, checked: boolean) => {
 
 // Check if all rows are selected
 const isAllSelected = computed(() => {
-  return allTechnicians.value.length > 0 && 
-    allTechnicians.value.every(technician => selectedRows.value.includes(technician.id))
+  return allUsers.value.length > 0 && 
+    allUsers.value.every(user => selectedRows.value.includes(user.id))
 })
 
 // Handle search with debounce
@@ -82,7 +82,7 @@ const handleSearch = () => {
   }
   
   searchTimeout.value = setTimeout(() => {
-    searchTechnicians(searchKeyword.value)
+    searchUsers(searchKeyword.value)
   }, 500)
 }
 
@@ -94,12 +94,12 @@ watch(searchKeyword, () => {
 // Emit events for parent component
 const emit = defineEmits(['edit', 'delete'])
 
-const handleEdit = (technician: any) => {
-  emit('edit', technician)
+const handleEdit = (user: any) => {
+  emit('edit', user)
 }
 
-const handleDelete = (technician: any) => {
-  emit('delete', technician)
+const handleDelete = (user: any) => {
+  emit('delete', user)
 }
 </script>
 
@@ -111,7 +111,7 @@ const handleDelete = (technician: any) => {
         <Search class="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           v-model="searchKeyword"
-          :placeholder="t('technicians.search_placeholder')"
+          :placeholder="t('users.search_placeholder')"
           class="pl-8"
         />
       </div>
@@ -133,35 +133,68 @@ const handleDelete = (technician: any) => {
                 @update:checked="toggleAll" 
               />
             </TableHead>
-            <TableHead>{{ t('technicians.table.name') }}</TableHead>
-            <!-- <TableHead>{{ t('technicians.table.created_on') }}</TableHead>
-            <TableHead>Last Modified</TableHead> -->
-            <TableHead :class="alignEnd">{{ t('technicians.table.actions') }}</TableHead>
+            <TableHead>{{ t('users.table.fullName') }}</TableHead>
+            <TableHead>{{ t('users.table.email') }}</TableHead>
+            <TableHead>{{ t('users.table.phone') }}</TableHead>
+            <TableHead>{{ t('users.table.role') }}</TableHead>
+            <TableHead>{{ t('users.table.status') }}</TableHead>
+            <TableHead :class="alignEnd">{{ t('users.table.actions') }}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-if="allTechnicians.length === 0">
-            <TableCell colspan="5" class="text-center py-8 text-muted-foreground">
-              {{ t('technicians.no_technicians_found') }}
+          <TableRow v-if="allUsers.length === 0">
+            <TableCell colspan="7" class="text-center py-8 text-muted-foreground">
+              {{ t('users.no_users_found') }}
             </TableCell>
           </TableRow>
-          <TableRow v-for="technician in allTechnicians" :key="technician.id" v-else>
+          <TableRow v-for="user in allUsers" :key="user.id" v-else>
             <TableCell>
               <Checkbox 
-                :checked="selectedRows.includes(technician.id)" 
-                @update:checked="(checked: boolean) => toggleRow(technician.id, checked)"
+                :checked="selectedRows.includes(user.id)" 
+                @update:checked="(checked: boolean) => toggleRow(user.id, checked)"
               />
             </TableCell>
-            <TableCell class="font-medium">{{ technician.name }}</TableCell>
-            <!-- <TableCell>{{ new Date(technician.createdOn).toLocaleDateString() }}</TableCell>
-            <TableCell>{{ technician.modifiedOn ? new Date(technician.modifiedOn).toLocaleDateString() : '-' }}</TableCell> -->
+            <TableCell class="font-medium">
+              {{ user.firstName }} {{ user.lastName }}
+            </TableCell>
+            <TableCell>
+              <div class="flex flex-col">
+                <span>{{ user.email }}</span>
+                <span class="text-xs text-muted-foreground">{{ user.phoneNumber }}</span>
+              </div>
+            </TableCell>
+            <TableCell>{{ user.phoneNumber }}</TableCell>
+            <TableCell>
+              <span 
+                :class="[
+                  'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium',
+                  user.type === 'admin' 
+                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' 
+                    : 'bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
+                ]"
+              >
+                {{ user.type === 'admin' ? t('users.roles.admin') : t('users.roles.user') }}
+              </span>
+            </TableCell>
+            <TableCell>
+              <span 
+                :class="[
+                  'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium',
+                  user.isActive 
+                    ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400' 
+                    : 'bg-gray-50 text-gray-700 dark:bg-gray-900/20 dark:text-gray-400'
+                ]"
+              >
+                {{ user.isActive ? t('users.status.active') : t('users.status.inactive') }}
+              </span>
+            </TableCell>
             <TableCell class="text-right">
               <div class="flex justify-end gap-2">
                 <Button 
                   size="sm" 
                   variant="ghost" 
                   class="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400"
-                  @click="handleEdit(technician)"
+                  @click="handleEdit(user)"
                 >
                   <Pencil class="h-4 w-4" />
                 </Button>
@@ -169,7 +202,7 @@ const handleDelete = (technician: any) => {
                   size="sm" 
                   variant="ghost" 
                   class="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400"
-                  @click="handleDelete(technician)"
+                  @click="handleDelete(user)"
                 >
                   <Trash2 class="h-4 w-4" />
                 </Button>
@@ -183,7 +216,7 @@ const handleDelete = (technician: any) => {
     <!-- Pagination -->
     <div class="flex items-center justify-between px-2 py-4">
       <div class="text-sm text-gray-700 dark:text-gray-300">
-        {{ t('technicians.table.showing', {
+        {{ t('users.table.showing', {
           from: toArabicNumerals((currentPage - 1) * itemsPerPage + 1),
           to: toArabicNumerals(Math.min(currentPage * itemsPerPage, totalCount)),
           total: toArabicNumerals(totalCount)
@@ -196,7 +229,7 @@ const handleDelete = (technician: any) => {
           :disabled="currentPage === 1"
           @click="goToPage(currentPage - 1)"
         >
-          {{ t('technicians.table.previous') }}
+          {{ t('users.table.previous') }}
         </Button>
         
         <div class="flex gap-1">
@@ -210,13 +243,15 @@ const handleDelete = (technician: any) => {
           >
             {{ toArabicNumerals(page) }}
           </Button>
-        </div>        <Button 
+        </div>
+
+        <Button 
           size="sm" 
           variant="outline" 
           :disabled="currentPage === totalPages"
           @click="goToPage(currentPage + 1)"
         >
-          {{ t('technicians.table.next') }}
+          {{ t('users.table.next') }}
         </Button>
       </div>
     </div>

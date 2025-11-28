@@ -20,6 +20,11 @@ export default {
         update: "تحديث",
         import: "استيراد",
     },
+    dialog: {
+        confirm_title: "تأكيد الإجراء",
+        cancel: "إلغاء",
+        confirm: "تأكيد"
+    },
     login: {
         login: 'تسجيل الدخول',
         password: 'كلمة المرور',

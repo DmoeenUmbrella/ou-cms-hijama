@@ -130,7 +130,7 @@ onMounted(async () => {
         <CardHeader>
           <CardTitle>{{ t('technicians.title') }}</CardTitle>
           <CardDescription>
-            Manage your technicians and view their information
+            <!-- Manage your technicians and view their information -->
           </CardDescription>
         </CardHeader>
         <CardContent>
