@@ -28,7 +28,7 @@ const isEdit = props.currentAction === 'edit-patient'
 
 const { t } = useI18n()
 
-const { form, errors, handleSave, getInitials, technicians, currentDate } = usePatientForm(props)
+const { form, errors, handleSave, getInitials, technicians, currentDate, dateValueToJSDate } = usePatientForm(props)
 
 const onSubmit = () => {
     const payload = handleSave()
@@ -156,7 +156,7 @@ const onSubmit = () => {
                     <PopoverTrigger as-child>
                         <Button variant="outline" class="w-full justify-start text-start font-normal"
                             :class="{ 'text-muted-foreground': !form.date }">
-                            <span>{{ form.date ? format(new Date(form.date), 'PPP') : 'Select Date' }}</span>
+                            <span>{{ form.date ? format(dateValueToJSDate(form.date), 'PPP') : 'Select Date' }}</span>
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent class="w-auto p-0">
@@ -191,7 +191,7 @@ const onSubmit = () => {
                     <PopoverTrigger as-child>
                         <Button variant="outline" class="w-full justify-start text-start font-normal"
                             :class="{ 'text-muted-foreground': !form.date }">
-                            <span>{{ form.date ? format(new Date(form.date), 'PPP') : 'Select Date' }}</span>
+                            <span>{{ form.date ? format(dateValueToJSDate(form.date), 'PPP') : 'Select Date' }}</span>
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent class="w-auto p-0">
@@ -256,7 +256,7 @@ const onSubmit = () => {
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent class="w-auto p-0">
-                        <Calendar v-model="form.reminder" mode="single" initial-focus />
+                        <Calendar v-model="form.reminder" mode="single" initial-focus :minValue="currentDate" />
                     </PopoverContent>
                 </Popover>
             </div>
@@ -271,11 +271,11 @@ const onSubmit = () => {
                     <PopoverTrigger as-child>
                         <Button variant="outline" class="w-full justify-start text-start font-normal"
                             :class="{ 'text-muted-foreground': !form.date }">
-                            <span>{{ form.date ? format(new Date(form.date), 'PPP') : 'Select Date' }}</span>
+                            <span>{{ form.date ? format(dateValueToJSDate(form.date), 'PPP') : 'Select Date' }}</span>
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent class="w-auto p-0">
-                        <Calendar v-model="form.date" mode="single" initial-focus />
+                        <Calendar v-model="form.date" mode="single" initial-focus :minValue="currentDate" />
                     </PopoverContent>
                 </Popover>
                 <span v-if="errors.date" class="text-xs text-destructive">{{ errors.date }}</span>
