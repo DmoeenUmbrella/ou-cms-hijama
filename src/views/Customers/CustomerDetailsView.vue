@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ArrowLeft, User } from 'lucide-vue-next'
@@ -7,8 +7,10 @@ import { toast } from 'vue-sonner'
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
 import CustomerInfoCard from '@/modules/customer/components/CustomerInfoCard.vue'
 import SessionHistoryTable from '@/modules/customer/components/SessionHistoryTable.vue'
+import FollowUpTable from '@/modules/customer/components/FollowUpTable.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useCustomer } from '@/modules/customer/composables/customer.composable'
 
 const { t } = useI18n()
@@ -21,19 +23,26 @@ const router = useRouter()
 const { 
   currentCustomer, 
   appointments,
+  followUps,
   isLoading, 
   isLoadingAppointments,
+  isLoadingFollowUps,
   currentPage,
   itemsPerPage,
   fetchCustomerDetails,
   fetchCustomerAppointments,
+  fetchCustomerFollowUps,
   goToPage
 } = useCustomer()
+
+// Active tab
+const activeTab = ref('sessions')
 
 onMounted(async () => {
   try {
     await fetchCustomerDetails(props.id)
     await fetchCustomerAppointments(props.id)
+    await fetchCustomerFollowUps(props.id)
   } catch (error: any) {
     toast.error(error.message || 'Failed to fetch customer details')
   }
@@ -81,24 +90,71 @@ const goBack = () => {
           <CustomerInfoCard :customer="currentCustomer" />
         </div>
 
-        <!-- Right Column - Session History -->
+        <!-- Right Column - Tabs with Session History and Follow-Ups -->
         <div class="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>{{ t('customers.session_history') }}</CardTitle>
+              <CardTitle>
+                {{ activeTab === 'sessions' ? t('customers.session_history') : t('customers.follow_ups') }}
+              </CardTitle>
               <CardDescription>
-                {{ t('customers.session_history_description') }}
+                {{ activeTab === 'sessions' ? t('customers.session_history_description') : t('customers.follow_ups_description') }}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <SessionHistoryTable 
-                :sessions="appointments?.appointments || []"
-                :total-appointments="appointments?.totalAppointments || 0"
-                :current-page="currentPage"
-                :items-per-page="itemsPerPage"
-                :is-loading="isLoadingAppointments"
-                @page-change="handlePageChange"
-              />
+              <Tabs v-model="activeTab" default-value="sessions">
+                <TabsList class="grid w-full grid-cols-2">
+                  <TabsTrigger value="sessions">
+                    {{ t('customers.tabs.sessions') }}
+                  </TabsTrigger>
+                  <TabsTrigger value="follow-ups">
+                    {{ t('customers.tabs.follow_ups') }}
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="sessions" class="mt-4">
+                  <SessionHistoryTable 
+                    :sessions="appointments?.appointments || []"
+                    :total-appointments="appointments?.totalAppointments || 0"
+                    :current-page="currentPage"
+                    :items-per-page="itemsPerPage"
+                    :is-loading="isLoadingAppointments"
+                    @page-change="handlePageChange"
+                  />
+                </TabsContent>
+                
+                <TabsContent value="follow-ups" class="mt-4">
+                  <div class="space-y-4">
+                    <!-- Upcoming Follow-Ups -->
+                    <div>
+                      <h3 class="text-lg font-semibold mb-2">{{ t('customers.upcoming_follow_ups') }}</h3>
+                      <FollowUpTable 
+                        :follow-ups="followUps?.upcoming.data || []"
+                        :total-follow-ups="followUps?.upcoming.totalCount || 0"
+                        :current-page="1"
+                        :items-per-page="10"
+                        :is-loading="isLoadingFollowUps"
+                        type="upcoming"
+                        @page-change="() => {}"
+                      />
+                    </div>
+                    
+                    <!-- Past Follow-Ups -->
+                    <div>
+                      <h3 class="text-lg font-semibold mb-2">{{ t('customers.past_follow_ups') }}</h3>
+                      <FollowUpTable 
+                        :follow-ups="followUps?.past.data || []"
+                        :total-follow-ups="followUps?.past.totalCount || 0"
+                        :current-page="1"
+                        :items-per-page="10"
+                        :is-loading="isLoadingFollowUps"
+                        type="past"
+                        @page-change="() => {}"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </div>

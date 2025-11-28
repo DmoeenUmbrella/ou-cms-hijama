@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useCustomerStore } from '../store/useCustomerStore'
-import { getCustomerById, getCustomerAppointments } from '@/api/endpoints/customer/queries'
+import { getCustomerById, getCustomerAppointments, getCustomerFollowUps } from '@/api/endpoints/customer/queries'
 
 export function useCustomer() {
   const store = useCustomerStore()
@@ -8,8 +8,10 @@ export function useCustomer() {
   // Computed properties from store
   const currentCustomer = computed(() => store.currentCustomer)
   const appointments = computed(() => store.appointments)
+  const followUps = computed(() => store.followUps)
   const isLoading = computed(() => store.isLoading)
   const isLoadingAppointments = computed(() => store.isLoadingAppointments)
+  const isLoadingFollowUps = computed(() => store.isLoadingFollowUps)
   const error = computed(() => store.error)
   const currentPage = computed(() => store.currentPage)
   const itemsPerPage = computed(() => store.itemsPerPage)
@@ -67,18 +69,40 @@ export function useCustomer() {
     await fetchCustomerAppointments(clientId, page, store.itemsPerPage)
   }
 
+  // Fetch customer follow-ups
+  const fetchCustomerFollowUps = async (clientId: string | number) => {
+    try {
+      store.setLoadingFollowUps(true)
+      store.setError(null)
+
+      const response = await getCustomerFollowUps({ clientId })
+      store.setFollowUps(response.data)
+      
+      return response
+    } catch (err: any) {
+      const errorMessage = err.message || 'Failed to fetch follow-ups'
+      store.setError(errorMessage)
+      throw err
+    } finally {
+      store.setLoadingFollowUps(false)
+    }
+  }
+
   // Clear customer data
   const clearCustomerData = () => {
     store.clearCustomer()
     store.clearAppointments()
+    store.clearFollowUps()
   }
 
   return {
     // State
     currentCustomer,
     appointments,
+    followUps,
     isLoading,
     isLoadingAppointments,
+    isLoadingFollowUps,
     error,
     currentPage,
     itemsPerPage,
@@ -86,6 +110,7 @@ export function useCustomer() {
     // Actions
     fetchCustomerDetails,
     fetchCustomerAppointments,
+    fetchCustomerFollowUps,
     goToPage,
     clearCustomerData,
   }

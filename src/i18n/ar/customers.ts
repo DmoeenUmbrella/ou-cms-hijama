@@ -12,6 +12,20 @@ export default {
     no_sessions_found: "لم يتم العثور على جلسات",
     loading_appointments: "جاري تحميل المواعيد...",
     customer_not_found: "لم يتم العثور على العميل",
+    
+    // Follow-ups
+    follow_ups: "المتابعات",
+    follow_ups_description: "مواعيد المتابعة القادمة والسابقة",
+    no_follow_ups_found: "لم يتم العثور على متابعات",
+    loading_follow_ups: "جاري تحميل المتابعات...",
+    upcoming_follow_ups: "المتابعات القادمة",
+    past_follow_ups: "المتابعات السابقة",
+    
+    // Tabs
+    tabs: {
+      sessions: "الجلسات",
+      follow_ups: "المتابعات"
+    },
     add_new_customer_title: "إضافة عميل جديد",
     edit_customer_title: "تعديل بيانات العميل",
     add_customer_btn: "إضافة عميل",
@@ -26,7 +40,14 @@ export default {
       previous: "السابق",
       next: "التالي",
       showing: "عرض {from} إلى {to} من {total} موعد",
+      showing_follow_ups: "عرض {from} إلى {to} من {total} متابعة",
       page_of: "صفحة {current} من {total}",
+      
+      // Follow-up columns
+      follow_up_id: "رقم المتابعة",
+      appointment_id: "رقم الموعد",
+      client_id: "رقم العميل",
+      follow_up_date: "تاريخ المتابعة",
       columns: {
         name: "الاسم / Name",
         phone: "رقم الهاتف / Number",

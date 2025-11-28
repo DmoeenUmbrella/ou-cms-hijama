@@ -13,6 +13,20 @@ export default {
     no_sessions_found: "No sessions found",
     loading_appointments: "Loading appointments...",
     customer_not_found: "Customer not found",
+    
+    // Follow-ups
+    follow_ups: "Follow-Ups",
+    follow_ups_description: "Upcoming and past follow-up appointments",
+    no_follow_ups_found: "No follow-ups found",
+    loading_follow_ups: "Loading follow-ups...",
+    upcoming_follow_ups: "Upcoming Follow-Ups",
+    past_follow_ups: "Past Follow-Ups",
+    
+    // Tabs
+    tabs: {
+      sessions: "Sessions",
+      follow_ups: "Follow-Ups"
+    },
     add_new_customer_title: "Add New Customer",
     edit_customer_title: "Edit Customer",
     add_customer_btn: "Add Customer",
@@ -32,7 +46,14 @@ export default {
       previous: "Previous",
       next: "Next",
       showing: "Showing {from} to {to} of {total} appointments",
+      showing_follow_ups: "Showing {from} to {to} of {total} follow-ups",
       page_of: "Page {current} of {total}",
+      
+      // Follow-up columns
+      follow_up_id: "Follow-Up ID",
+      appointment_id: "Appointment ID",
+      client_id: "Client ID",
+      follow_up_date: "Follow-Up Date",
       columns: {
         name: "Name",
         phone: "Phone Number",
