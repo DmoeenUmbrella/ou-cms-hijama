@@ -6,6 +6,8 @@ import reports from './reports';
 import sessions from './sessions';
 import users from './users';
 import auth from './auth';
+import patient from './patient';
+import technicians from './technicians';
 
 export default {
     ...common,
@@ -16,4 +18,6 @@ export default {
     ...sessions,
     ...users,
     ...auth,
+    ...patient,
+    ...technicians,
 };

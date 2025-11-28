@@ -12,7 +12,6 @@ export const exchangeAuthCode = async (code: string): Promise<AuthResponse> => {
   // Map the backend format (accessToken) to our app format (token)
   // and cast the user to UserProfile (ensuring types align where needed)
   const { data } = response.data;
-debugger
   return {
     token: data.accessToken,
     refreshToken: data?.keycloakTokens?.refresh_token ?? "",
@@ -28,6 +27,5 @@ debugger
 };
 
 export const logoutUser = async (token: string): Promise<void> => {
-    debugger
   await apiClient.put("/auth/logout", { refreshToken: token });
 };

@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import axios from "axios";
 import { toast } from "vue-sonner";
-import { validateForm } from "@/utils/formValidator.js";
+import { validateForm } from "@/utils/helpers/validate";
 import { i18n } from "@/i18n"; // Importing the i18n instance directly
 
 export const useUsersStore = defineStore("users", () => {

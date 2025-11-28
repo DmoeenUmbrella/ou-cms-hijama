@@ -1,0 +1,52 @@
+export default {
+  patient: {
+    registration_title: "تسجيل جلسة مريض جديد",
+    details: "تفاصيل المريض",
+    information: "معلومات المريض",
+    // Used in composable:
+    medical_notes: "ملاحظات طبية",
+    medical_notes_placeholder: "أي تاريخ طبي ذي صلة...",
+    dob: "تاريخ الميلاد",
+    create_success: " تم إنشاء المريض بنجاح",
+    update_success: "تم تحديث حالة المريض بنجاح",
+    payment_method: "اختر طريقة الدفع",
+    card: "بطاقة",
+    cash: "نقدًا",
+    validation: {
+      required: "هذا الحقل مطلوب",
+    },
+    button: {
+      submit: "إرسال",
+      cancel: "إلغاء",
+    },
+    patient: {
+      information: "معلومات المريض",
+      name: "الاسم",
+      phone: "الهاتف",
+      gender: "الجنس",
+      male: "ذكر",
+      female: "أنثى",
+      other: "أخرى",
+      technician: "كوبير",
+      technician_placeholder: "اختر كوبر",
+      paymentMethod: "طريقة الدفع",
+      numberOfCups: "عدد الكؤوس",
+      amount: "المبلغ",
+      notes: "ملاحظات",
+      date: "التاريخ",
+      reminder: "تذكير",
+    },
+    session: {
+      date: "التاريخ",
+      time: "الوقت",
+      numberOfCups: "عدد الكؤوس",
+      price: "السعر",
+      technician: "كوبير",
+      notes: "ملاحظات",
+      reminder: "تذكير",
+    },
+    followup: {
+      date: "التاريخ",
+    },
+  },
+};
