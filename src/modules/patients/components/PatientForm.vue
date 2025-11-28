@@ -28,7 +28,7 @@ const isEdit = props.currentAction === 'edit-patient'
 
 const { t } = useI18n()
 
-const { form, errors, handleSave, getInitials, technicians } = usePatientForm(props)
+const { form, errors, handleSave, getInitials, technicians, currentDate } = usePatientForm(props)
 
 const onSubmit = () => {
     const payload = handleSave()
@@ -57,12 +57,12 @@ const onSubmit = () => {
                     <div>
                         <p class="text-muted-foreground text-center">{{ $t('customers.table.columns.total_sessions') ||
                             'Total Sessions' }}</p>
-                        <p class="font-medium text-primary text-center">{{ patient.totalSessions ?? 0 }}</p>
+                        <p class="font-medium text-primary text-center">{{ patient.totalSessions ?? '--' }}</p>
                     </div>
                     <div>
                         <p class="text-muted-foreground text-center">{{ $t('customers.table.columns.last_visit') ||
                             'Total Visit' }}</p>
-                        <p class="font-medium text-primary text-center">{{ patient.lastSessionDate ?? 0 }}</p>
+                        <p class="font-medium text-primary text-center">{{ patient.lastSessionDate ?? '--' }}</p>
                     </div>
                 </div>
             </div>
@@ -103,19 +103,14 @@ const onSubmit = () => {
             </div>
 
             <div v-if="!isEdit" class="grid gap-2">
-                <Label for="technicianId">{{ t('patient.patient.technician') || 'Technician' }}
-                    <!-- <span class="text-destructive">*</span> -->
-                </Label>
-                <Select v-model="form.technicianId">
-                    <SelectTrigger class="w-full" :class="{ 'border-destructive': errors.technicianId }">
-                        <SelectValue placeholder="Select Technician" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem v-for="tech in technicians" :key="tech.id" :value="tech.id">{{ tech.name }}
-                        </SelectItem>
-                    </SelectContent>
-                </Select>
-                <span v-if="errors.technicianId" class="text-xs text-destructive">{{ errors.technicianId }}</span>
+                <Label for="numberOfCups">{{ t('patient.patient.numberOfCups') || 'Number of Cups' }}</Label>
+                <Input id="numberOfCups" v-model="form.numberOfCups" />
+            </div>
+
+
+            <div v-if="!isEdit" class="grid gap-2">
+                <Label for="amount">{{ t('patient.patient.amount') || 'Amount' }}</Label>
+                <Input id="amount" type="number" v-model="form.amount" />
             </div>
 
             <div v-if="!isEdit" class="grid gap-2">
@@ -134,15 +129,20 @@ const onSubmit = () => {
                 <span v-if="errors.paymentMethod" class="text-xs text-destructive">{{ errors.paymentMethod }}</span>
             </div>
 
-            <!-- Other fields remain the same (numberOfCups, amount, notes, date, reminder) -->
             <div v-if="!isEdit" class="grid gap-2">
-                <Label for="numberOfCups">{{ t('patient.patient.numberOfCups') || 'Number of Cups' }}</Label>
-                <Input id="numberOfCups" v-model="form.numberOfCups" />
-            </div>
-
-            <div v-if="!isEdit" class="grid gap-2">
-                <Label for="amount">{{ t('patient.patient.amount') || 'Amount' }}</Label>
-                <Input id="amount" type="number" v-model="form.amount" />
+                <Label for="technicianId">{{ t('patient.patient.technician') || 'Technician' }}
+                    <!-- <span class="text-destructive">*</span> -->
+                </Label>
+                <Select v-model="form.technicianId">
+                    <SelectTrigger class="w-full" :class="{ 'border-destructive': errors.technicianId }">
+                        <SelectValue :placeholder="t('patient.patient.technician_placeholder')" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem v-for="tech in technicians" :key="tech.id" :value="tech.id">{{ tech.name }}
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
+                <span v-if="errors.technicianId" class="text-xs text-destructive">{{ errors.technicianId }}</span>
             </div>
 
             <div v-if="!isEdit" class="grid gap-2 col-span-2">
@@ -160,7 +160,7 @@ const onSubmit = () => {
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent class="w-auto p-0">
-                        <Calendar v-model="form.date" mode="single" initial-focus />
+                        <Calendar v-model="form.date" mode="single" initial-focus :minValue="currentDate" />
                     </PopoverContent>
                 </Popover>
             </div>
@@ -175,7 +175,7 @@ const onSubmit = () => {
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent class="w-auto p-0">
-                        <Calendar v-model="form.reminder" mode="single" initial-focus />
+                        <Calendar v-model="form.reminder" mode="single" initial-focus :minValue="currentDate" />
                     </PopoverContent>
                 </Popover>
             </div>
@@ -195,7 +195,7 @@ const onSubmit = () => {
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent class="w-auto p-0">
-                        <Calendar v-model="form.date" mode="single" initial-focus />
+                        <Calendar v-model="form.date" mode="single" initial-focus :minValue="currentDate" />
                     </PopoverContent>
                 </Popover>
                 <span v-if="errors.date" class="text-xs text-destructive">{{ errors.date }}</span>
@@ -231,7 +231,7 @@ const onSubmit = () => {
                 </Label>
                 <Select v-model="form.technicianId">
                     <SelectTrigger class="w-full" :class="{ 'border-destructive': errors.technicianId }">
-                        <SelectValue placeholder="Select Technician" />
+                        <SelectValue :placeholder="t('patient.patient.technician_placeholder')" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem v-for="tech in technicians" :key="tech.id" :value="tech.id">{{ tech.name }}

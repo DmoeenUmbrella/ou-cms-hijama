@@ -2,6 +2,7 @@ import { reactive, watch, onMounted } from "vue";
 import { validateForm } from "@/utils/helpers/validate";
 import { useTechnician } from "@/modules/technician/composables/useTechnician";
 import dateToISOStringFormat from "@/utils/helpers/formatDateTime";
+import { today } from "@internationalized/date"
 
 export function usePatientForm(props: {
   patient: any;
@@ -13,6 +14,17 @@ export function usePatientForm(props: {
     | "create-followup"
     | null;
 }) {
+  const currentDate = today(); // uses local time zone by default
+
+  const getCurrentTime = () => {
+    const now = new Date();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    return `${hours}:${minutes}`;
+  }
+
   const form = reactive({
     id: "",
     // Patient
@@ -24,13 +36,13 @@ export function usePatientForm(props: {
     paymentMethod: "",
     technicianId: "",
     notes: "",
-    date: null,
-    reminder: null,
+    date: currentDate,
+    reminder: currentDate,
 
     // Session
     clientId: "",
     clinicId: null,
-    time: null,
+    time: getCurrentTime(),
     price: 0,
 
     // Follow-up
@@ -39,7 +51,6 @@ export function usePatientForm(props: {
 
   const errors = reactive<Record<string, string>>({});
 
-  
   const { fetchTechnicians, technicians, paginationInfo } = useTechnician();
   onMounted(() => {
     if (
@@ -47,7 +58,7 @@ export function usePatientForm(props: {
       paginationInfo.value.totalCount > technicians?.value?.length
     )
       fetchTechnicians({ page: 1, count: 100 });
-  })
+  });
 
   // Prefill form if patient exists
   watch(
@@ -161,5 +172,6 @@ export function usePatientForm(props: {
     handleSave,
     getInitials,
     technicians,
+    currentDate,
   };
 }
