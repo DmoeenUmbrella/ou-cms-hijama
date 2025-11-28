@@ -16,7 +16,7 @@ export default {
 
     create_success: "تم إنشاء الجلسة بنجاح",
     create_failed: "حدث خطأ ما، يرجى المحاولة مرة أخرى",
-    no_clients: "لم يتم العثور على سجل متاح للمريض",
+    no_clients: "لم يتم العثور على سجل المريض",
 
     follow_up_type: "نوع المتابعة",
     priority_level: "مستوى الأولوية",
