@@ -10,7 +10,8 @@ import UsersFormDialog from '@/modules/users/components/UsersFormDialog.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useUser } from '@/modules/users/composables/useUser'
-import type { CreateUserPayload, UpdateUserPayload } from '@/api/endpoints/user/mutations'
+import type { CreateUserPayload, CreateAdminPayload, UpdateUserPayload } from '@/api/endpoints/user/mutations'
+import type { UserFormData } from '@/api/endpoints/user/types'
 
 const { t } = useI18n()
 const dialog = useConfirmDialogStore()
@@ -18,20 +19,10 @@ const dialog = useConfirmDialogStore()
 const {
   fetchUsers,
   addUser,
+  addAdmin,
   editUser,
   removeUser
 } = useUser()
-
-interface UserFormData {
-  id?: string
-  firstName: string
-  lastName: string
-  email: string
-  phoneNumber: string
-  clinicId: string
-  profileUrl: string
-  password?: string
-}
 
 // Dialog states
 const isFormDialogOpen = ref(false)
@@ -47,8 +38,8 @@ const handleEditUser = (user: any) => {
     lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
-    clinicId: user.clinicIds?.[0] || '1',
-    profileUrl: user.profileUrl || ''
+    profileUrl: user.profileUrl || '',
+    isAdmin: user.type === 'admin'
   }
   isFormDialogOpen.value = true
 }
@@ -78,17 +69,32 @@ const handleAddUser = () => {
 const handleFormSubmit = async (data: UserFormData) => {
   try {
     if (dialogMode.value === 'create') {
-      const payload: CreateUserPayload = {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        clinicId: data.clinicId,
-        profileUrl: data.profileUrl || '',
-        password: data.password || '',
+      if (data.isAdmin) {
+        // Create admin user
+        const payload: CreateAdminPayload = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+          clinicName: data.clinicName || '',
+          profileUrl: data.profileUrl || '',
+          password: data.password || '',
+        }
+        
+        await addAdmin(payload)
+      } else {
+        // Create regular user
+        const payload: CreateUserPayload = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+          profileUrl: data.profileUrl || '',
+          password: data.password || '',
+        }
+        
+        await addUser(payload)
       }
-      
-      await addUser(payload)
       toast.success(t('users.created_successfully'))
     } else {
       const payload: UpdateUserPayload = {
@@ -96,7 +102,6 @@ const handleFormSubmit = async (data: UserFormData) => {
         firstName: data.firstName,
         lastName: data.lastName,
         phoneNumber: data.phoneNumber,
-        clinicId: data.clinicId,
         profileUrl: data.profileUrl || '',
       }
       

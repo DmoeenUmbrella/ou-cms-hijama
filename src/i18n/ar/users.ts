@@ -60,8 +60,6 @@ export default {
             phone_label: "رقم الهاتف",
             phone_placeholder: "أدخل رقم الهاتف",
             phone_required: "رقم الهاتف مطلوب",
-            clinicId_label: "معرف العيادة",
-            clinicId_placeholder: "أدخل معرف العيادة",
             profileUrl_label: "رابط الملف الشخصي",
             profileUrl_placeholder: "أدخل رابط الملف الشخصي",
             cancel: "إلغاء",

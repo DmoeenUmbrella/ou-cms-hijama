@@ -4,19 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import UsersForm from './UsersForm.vue'
+import type { UserFormData } from '@/api/endpoints/user/types'
 
 const { t } = useI18n()
-
-interface UserFormData {
-  id?: string
-  firstName: string
-  lastName: string
-  email: string
-  phoneNumber: string
-  clinicId: string
-  profileUrl: string
-  password?: string
-}
 
 interface Props {
   open: boolean

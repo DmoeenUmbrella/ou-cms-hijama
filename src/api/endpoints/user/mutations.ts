@@ -1,13 +1,23 @@
 import apiClient from "@/api/axios/config";
 import type { User } from "./queries";
 
+// Create Admin Payload
+export interface CreateAdminPayload {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  clinicName: string;
+  profileUrl?: string;
+  password: string;
+}
+
 // Create User Payload
 export interface CreateUserPayload {
   firstName: string;
   lastName: string;
   email: string;
   phoneNumber: string;
-  clinicId: string;
   profileUrl?: string;
   password: string;
 }
@@ -17,9 +27,9 @@ export interface UpdateUserPayload {
   id: string;
   firstName: string;
   lastName: string;
+  allowedScreens?: string[];
   phoneNumber: string;
   profileUrl?: string;
-  clinicId: string;
 }
 
 // Response Types
@@ -29,9 +39,20 @@ export interface UserMutationResponse {
   message: string;
 }
 
+// Create Admin
+export const createAdmin = async (payload: CreateAdminPayload): Promise<UserMutationResponse> => {
+  const response = await apiClient.post<UserMutationResponse>('/users/admin', payload);
+  
+  if (!response.data.isSuccess) {
+    throw new Error(response.data.message || 'Failed to create admin');
+  }
+  
+  return response.data;
+};
+
 // Create User
 export const createUser = async (payload: CreateUserPayload): Promise<UserMutationResponse> => {
-  const response = await apiClient.post<UserMutationResponse>('/users', payload);
+  const response = await apiClient.post<UserMutationResponse>('/users/user', payload);
   
   if (!response.data.isSuccess) {
     throw new Error(response.data.message || 'Failed to create user');
@@ -42,8 +63,7 @@ export const createUser = async (payload: CreateUserPayload): Promise<UserMutati
 
 // Update User
 export const updateUser = async (payload: UpdateUserPayload): Promise<UserMutationResponse> => {
-  const { id, ...data } = payload;
-  const response = await apiClient.put<UserMutationResponse>(`/users/${id}`, data);
+  const response = await apiClient.put<UserMutationResponse>('/users', payload);
   
   if (!response.data.isSuccess) {
     throw new Error(response.data.message || 'Failed to update user');

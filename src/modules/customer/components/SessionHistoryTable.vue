@@ -103,7 +103,7 @@ const handleNextPage = () => {
 
     <!-- Pagination -->
     <div v-if="!isLoading && totalAppointments > 0" class="flex items-center justify-between px-4 py-4 border-t">
-      <div class="text-sm text-muted-foreground">
+     <div class="text-sm text-gray-700 dark:text-gray-300">
         {{ t('customers.table.showing', { 
           from: toArabicNumerals(((currentPage - 1) * itemsPerPage) + 1), 
           to: toArabicNumerals(Math.min(currentPage * itemsPerPage, totalAppointments)),
@@ -117,11 +117,19 @@ const handleNextPage = () => {
           :disabled="!canGoPrevious"
           @click="handlePreviousPage"
         >
-          <ChevronLeft class="h-4 w-4 mr-1" />
           {{ t('customers.table.previous') }}
         </Button>
-        <div class="text-sm font-medium">
-          {{ t('customers.table.page_of', { current: toArabicNumerals(currentPage), total: toArabicNumerals(totalPages) }) }}
+        <div class="flex gap-1">
+          <Button
+            v-for="page in totalPages"
+            :key="page"
+            size="sm"
+            :variant="currentPage === page ? 'default' : 'outline'"
+            @click="emit('page-change', page)"
+            v-show="page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1"
+          >
+            {{ toArabicNumerals(page) }}
+          </Button>
         </div>
         <Button
           variant="outline"
@@ -130,7 +138,6 @@ const handleNextPage = () => {
           @click="handleNextPage"
         >
           {{ t('customers.table.next') }}
-          <ChevronRight class="h-4 w-4 ml-1" />
         </Button>
       </div>
     </div>

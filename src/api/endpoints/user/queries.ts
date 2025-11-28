@@ -10,7 +10,6 @@ export interface User {
   phoneNumber: string;
   keycloakUserId: string;
   profileUrl: string;
-  clinicIds: string[] | null;
   isActive: boolean;
   isDeleted: boolean;
   createdOn: string;

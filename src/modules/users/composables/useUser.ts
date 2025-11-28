@@ -1,7 +1,7 @@
 import { computed } from 'vue';
 import { useUserStore } from '../stores/userStore';
 import { getUsers, getUserById, type GetUsersParams } from '@/api/endpoints/user/queries';
-import { createUser, updateUser, deleteUser, type CreateUserPayload, type UpdateUserPayload } from '@/api/endpoints/user/mutations';
+import { createUser, createAdmin, updateUser, deleteUser, type CreateUserPayload, type CreateAdminPayload, type UpdateUserPayload } from '@/api/endpoints/user/mutations';
 
 export function useUser() {
   const userStore = useUserStore();
@@ -108,6 +108,32 @@ export function useUser() {
     }
   };
 
+  // Create new admin
+  const addAdmin = async (payload: CreateAdminPayload) => {
+    try {
+      userStore.setLoading(true);
+      userStore.setError(null);
+
+      const response = await createAdmin(payload);
+
+      if (response.isSuccess) {
+        userStore.addUser(response.data);
+        // Optionally refetch to get updated list
+        await fetchUsers();
+      } else {
+        userStore.setError(response.message || 'Failed to create admin');
+      }
+
+      return response;
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to create admin';
+      userStore.setError(errorMessage);
+      throw err;
+    } finally {
+      userStore.setLoading(false);
+    }
+  };
+
   // Update existing user
   const editUser = async (payload: UpdateUserPayload) => {
     try {
@@ -199,6 +225,7 @@ export function useUser() {
     fetchUsers,
     fetchUserById,
     addUser,
+    addAdmin,
     editUser,
     removeUser,
     goToPage,

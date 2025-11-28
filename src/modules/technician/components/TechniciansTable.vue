@@ -181,7 +181,7 @@ const handleDelete = (technician: any) => {
     </div>
 
     <!-- Pagination -->
-    <div class="flex items-center justify-between px-2 py-4">
+    <div v-if="!isLoading && totalCount > 0"  class="flex items-center justify-between px-2 py-4">
       <div class="text-sm text-gray-700 dark:text-gray-300">
         {{ t('technicians.table.showing', {
           from: toArabicNumerals((currentPage - 1) * itemsPerPage + 1),

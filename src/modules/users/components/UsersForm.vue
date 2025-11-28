@@ -3,19 +3,10 @@ import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+// import { Switch } from '@/components/ui/switch'
+import type { UserFormData } from '@/api/endpoints/user/types'
 
 const { t } = useI18n()
-
-interface UserFormData {
-  id?: string
-  firstName: string
-  lastName: string
-  email: string
-  phoneNumber: string
-  clinicId: string
-  profileUrl: string
-  password?: string
-}
 
 interface Props {
   initialData?: UserFormData | null
@@ -37,9 +28,10 @@ const formData = ref<UserFormData>({
   lastName: '',
   email: '',
   phoneNumber: '',
-  clinicId: '1',
+  clinicName: '',
   profileUrl: '',
-  password: ''
+  password: '',
+  isAdmin: false
 })
 
 // Watch for initialData changes to populate form in edit mode
@@ -51,8 +43,9 @@ watch(() => props.initialData, (newData) => {
       lastName: newData.lastName,
       email: newData.email || '',
       phoneNumber: newData.phoneNumber,
-      clinicId: newData.clinicId,
-      profileUrl: newData.profileUrl || ''
+      clinicName: newData.clinicName || '',
+      profileUrl: newData.profileUrl || '',
+      isAdmin: newData.isAdmin || false
     }
   } else {
     // Reset form when no initial data
@@ -61,9 +54,10 @@ watch(() => props.initialData, (newData) => {
       lastName: '',
       email: '',
       phoneNumber: '',
-      clinicId: '1',
+      clinicName: '',
       profileUrl: '',
-      password: ''
+      password: '',
+      isAdmin: false
     }
   }
 }, { immediate: true })
@@ -105,6 +99,12 @@ const validateForm = (): boolean => {
     isValid = false
   }
 
+  // Validate clinic name for admin users (only on create)
+  if (!props.isEdit && formData.value.isAdmin && !formData.value.clinicName?.trim()) {
+    errors.value.clinicName = t('users.form.clinicName_required')
+    isValid = false
+  }
+
   return isValid
 }
 
@@ -128,6 +128,20 @@ defineExpose({
 
 <template>
   <form @submit.prevent="handleSubmit" class="space-y-4">
+    <!-- User Type Toggle (only for create) -->
+    <!-- <div v-if="!isEdit" class="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
+      <div class="space-y-0.5">
+        <Label class="text-base">{{ t('users.form.userType_label') }}</Label>
+        <p class="text-sm text-muted-foreground">
+          {{ formData.isAdmin ? t('users.form.userType_admin_description') : t('users.form.userType_user_description') }}
+        </p>
+      </div>
+      <Switch 
+        :checked="formData.isAdmin"
+        @update:checked="(value: boolean) => formData.isAdmin = value"
+      />
+    </div> -->
+
     <div class="grid grid-cols-2 gap-4">
       <!-- First Name Field -->
       <div class="space-y-2">
@@ -205,15 +219,19 @@ defineExpose({
       <p v-if="errors.phoneNumber" class="text-sm text-red-500">{{ errors.phoneNumber }}</p>
     </div>
 
-    <!-- Clinic ID Field -->
-    <div class="space-y-2">
-      <Label for="clinicId">{{ t('users.form.clinicId_label') }}</Label>
+    <!-- Clinic Name Field (only for admin on create) -->
+    <div v-if="!isEdit && formData.isAdmin" class="space-y-2">
+      <Label for="clinicName">
+        {{ t('users.form.clinicName_label') }} <span class="text-red-500">*</span>
+      </Label>
       <Input
-        id="clinicId"
-        v-model="formData.clinicId"
+        id="clinicName"
+        v-model="formData.clinicName"
         type="text"
-        :placeholder="t('users.form.clinicId_placeholder')"
+        :placeholder="t('users.form.clinicName_placeholder')"
+        :class="{ 'border-red-500': errors.clinicName }"
       />
+      <p v-if="errors.clinicName" class="text-sm text-red-500">{{ errors.clinicName }}</p>
     </div>
 
     <!-- Profile URL Field -->
