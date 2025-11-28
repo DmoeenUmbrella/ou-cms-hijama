@@ -1,6 +1,6 @@
 import { ref, computed, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import { useAppointmentsStore } from "../stores/useAppointmentsStore";
+import { usePatientStore } from "../stores/usePatientStore";
 import { useServicesStore } from "@/stores/useServicesStore";
 import { validateForm } from "@/utils/helpers/validate";
 import type {
@@ -16,15 +16,15 @@ const validationSchema = {
   priorityLevel: { type: "string", validate: "required" },
 } as const;
 
-export function useFollowUpForm(patientId: number | null) {
+export function useFollowUpForm(clientId: string | null) {
   const { t } = useI18n();
-  const appointmentsStore = useAppointmentsStore();
+  const appointmentsStore = usePatientStore();
   const servicesStore = useServicesStore();
 
   // BIND to a local form state specific for Follow-up creation
   const form = ref({
-    patientId: patientId, // Required patient ID
-    serviceId: null as number | null,
+    clientId: clientId, // Required patient ID
+    serviceId: null as string | null,
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
     notes: "" as string,
@@ -68,7 +68,7 @@ export function useFollowUpForm(patientId: number | null) {
 
     // 2. Prepare Payload
     const followUpPayload: CreateFollowUpPayload = {
-      patientId: form.value.patientId!,
+      clientId: form.value.clientId!,
       serviceId: form.value.serviceId!,
       date: new Date(`${form.value.date}T${form.value.time}:00`).toISOString(),
       time: new Date(`${form.value.date}T${form.value.time}:00`).toISOString(),

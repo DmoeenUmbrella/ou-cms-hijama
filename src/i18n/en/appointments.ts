@@ -6,8 +6,10 @@ export default {
     select_date: "Select Date",
     list_title: "Appointments",
     details: "Appointment Details",
-    create_label: "Create a new appointment",
-    edit_label: "Modify the appointment",
+    create_label: "Create a new patient",
+    create_desc_label: "Enroll patient in the system for future records",
+    edit_label: "Modify the patient",
+    edit_desc_label: "Edit patient details",
     new_title: "New Appointment",
     create: "Create Appointment",
     edit_title: "Edit Appointment",
@@ -39,7 +41,7 @@ export default {
       create_session: "Create Session",
       create_follow_up: "Schedule Follow-up",
       view_details: "View Patient Record",
-   
+
       client: "Client",
       service: "Service",
       time: "Time",

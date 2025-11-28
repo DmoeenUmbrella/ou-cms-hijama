@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAppointmentsStore } from '@/modules/appointment/stores/useAppointmentsStore'
+import { usePatientStore } from '@/modules/patients/stores/usePatientStore'
 import { Calendar } from '@/components/ui/calendar'
 import {
     CalendarDate,
@@ -13,7 +13,7 @@ import {
 import type { DateValue } from '@internationalized/date'
 
 const { locale } = useI18n()
-const appointmentsStore = useAppointmentsStore()
+const appointmentsStore = usePatientStore()
 
 // Sync the Calendar's v-model (CalendarDate) with the Store's state (String 'YYYY-MM-DD')
 const selectedDate = computed({

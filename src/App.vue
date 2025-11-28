@@ -4,6 +4,10 @@ import { Toaster } from './components/ui/sonner';
 </script>
 
 <template>
-  <RouterView />
-  <Toaster />
+  <div>
+    <main>
+      <RouterView />
+    </main>
+    <Toaster />
+  </div>
 </template>

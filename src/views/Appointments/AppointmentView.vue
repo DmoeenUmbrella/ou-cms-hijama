@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAppointmentsStore } from '@/modules/appointment/stores/useAppointmentsStore'
+import { usePatientStore } from '@/modules/patients/stores/usePatientStore'
 import { useCustomersStore } from '@/stores/useCustomersStore'
 import { useServicesStore } from '@/stores/useServicesStore'
-import { useAppointmentView } from '@/modules/appointment/composables/appointments.composable' // Import the View Composable
+import { useAppointmentView } from '@/modules/patients/composables/patient.composable' // Import the View Composable
 
 // Icons
 import { Calendar as CalendarIcon, FileUp, Trash2 } from 'lucide-vue-next'
 
 // Layout & Components
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
-import AppointmentsTable from '@/modules/appointment/components/AppointmentsTable.vue'
-// import AppointmentCalendar from '@/components/appointments/AppointmentCalendar.vue'
-import AppointmentForm from '@/modules/appointment/components/AppointmentForm.vue'
+import AppointmentsTable from '@/modules/patients/components/PatientsTable.vue'
 
 // Shadcn UI
 import { Button } from '@/components/ui/button'
@@ -21,31 +19,29 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator' // Assuming Separator is installed
 import DialogDescription from '@/components/ui/dialog/DialogDescription.vue'
-import AppointmentCalendar from '@/modules/appointment/components/AppointmentCalendar.vue'
-import SessionForm from '@/modules/appointment/components/SessionForm.vue'
-import FollowUpForm from '@/modules/appointment/components/FollowUpForm.vue'
+import PatientForm from '@/modules/patients/components/PatientForm.vue'
+// import AppointmentCalendar from '@/modules/patients/components/PatientCalendar.vue'
 
 // Use the Composable for View Logic
 const {
     isModalActive, // Patient Registration Modal (Multi-step)
-    isSessionModalActive, // Existing Patient Session Modal
-    isFollowUpModalActive,
     isDeleteModalActive,
-    patientContext, // Patient data passed to Session Form
     appointmentToDelete,
     isEditing,
     modalTitle,
-    openNewAppointmentModal,
+    currentAction,
+    selectedPatient,
+    handleCreateAppointment,
     handleEditAppointment,
     handleDeleteConfirmation,
     handleDeleteAppointment,
-    handleFormSubmitSuccess,
+    handleFormSubmit,
     closeModal,
     handleCreateSession,
     handleCreateFollowUp,
 } = useAppointmentView()
 
-const appointmentsStore = useAppointmentsStore()
+const appointmentsStore = usePatientStore()
 const customersStore = useCustomersStore()
 const servicesStore = useServicesStore()
 const { t } = useI18n()
@@ -57,13 +53,40 @@ onMounted(() => {
     customersStore.fetchClients()
     servicesStore.fetchServices()
 })
+
 </script>
 
 <template>
     <LayoutAuthenticated>
 
-        <!-- 1. Create/Edit Appointment Dialog -->
-        <Dialog v-model:open="isModalActive">
+        <!-- 1. Create/Edit Modal -->
+        <Dialog v-model:open="isModalActive" onOpenChange="closeModal">
+            <DialogContent class="sm:max-w-[800px] max-w-[800px]">
+                <DialogHeader>
+                    <DialogTitle>{{ modalTitle }}</DialogTitle>
+                    <DialogDescription>
+                        {{
+                        isEditing
+                        ? t('appointment.edit_desc_label')
+                        : currentAction === 'create-session'
+                        ? t('session.existing_patient_desc')
+                        : currentAction === 'create-followup'
+                        ? ''
+                        : t('appointment.create_desc_label')
+                        }}
+                    </DialogDescription>
+                </DialogHeader>
+
+                <!-- Conditionally Render Forms -->
+                <div class="max-h-[90dvh] overflow-auto">
+                    <PatientForm :patient="isEditing || currentAction !== 'edit-patient' ? selectedPatient : undefined"
+                        :isEditing="isEditing" :currentAction="currentAction" @submit="handleFormSubmit"
+                        @cancel="closeModal" />
+                </div>
+            </DialogContent>
+        </Dialog>
+
+        <!-- <Dialog v-model:open="isModalActive">
             <DialogContent class="sm:max-w-[800px] max-w-[800px]">
                 <DialogHeader>
                     <DialogTitle>{{ modalTitle }}</DialogTitle>
@@ -72,43 +95,11 @@ onMounted(() => {
                     </DialogDescription>
                 </DialogHeader>
 
-                <!-- The form handles its own submission and validation via the composable -->
-                <AppointmentForm class="max-h-[90dvh] overflow-auto" @submit=" handleFormSubmitSuccess"
-                    @cancel="closeModal" :isEditing="isEditing" />
+        <AppointmentForm class="max-h-[90dvh] overflow-auto" @submit=" handleFormSubmit" @cancel="closeModal"
+            :isEditing="isEditing" />
 
-            </DialogContent>
-        </Dialog>
-
-        <Dialog v-model:open="isSessionModalActive">
-            <DialogContent class="sm:max-w-[800px] max-w-[800px]">
-                <DialogHeader>
-                    <DialogTitle>{{ t('session.new_title') || 'Add New Session' }}</DialogTitle>
-                    <DialogDescription>
-                        {{ t('session.existing_patient_desc') || 'Create a new therapy session for an existing patient.'
-                        }}
-                    </DialogDescription>
-                </DialogHeader>
-
-                <!-- SessionForm.vue requires the patient context -->
-                <SessionForm class="max-h-[80dvh] overflow-y-auto" v-if="patientContext" :patient="patientContext"
-                    @submit="handleFormSubmitSuccess" @cancel="closeModal" />
-            </DialogContent>
-        </Dialog>
-        <Dialog v-model:open="isFollowUpModalActive">
-            <DialogContent class="sm:max-w-[800px] max-w-[800px]">
-                <DialogHeader>
-                    <DialogTitle>{{ t('session.new_title') || 'Add New Session' }}</DialogTitle>
-                    <DialogDescription>
-                        {{ t('session.existing_patient_desc') || 'Create a new therapy session for an existing patient.'
-                        }}
-                    </DialogDescription>
-                </DialogHeader>
-
-                <!-- FollowUpForm.vue requires the patient context -->
-                <FollowUpForm class="max-h-[80dvh] overflow-y-auto" v-if="patientContext" :patient="patientContext"
-                    @submit="handleFormSubmitSuccess" @cancel="closeModal" />
-            </DialogContent>
-        </Dialog>
+        </DialogContent>
+        </Dialog> -->
 
         <!-- 2. Delete Confirmation Dialog -->
         <Dialog v-model:open="isDeleteModalActive">
@@ -152,7 +143,7 @@ onMounted(() => {
                         <FileUp class="mr-2 h-4 w-4" />
                         {{ t('button.import') }}
                     </Button>
-                    <Button variant="default" size="sm" @click="openNewAppointmentModal">
+                    <Button variant="default" size="sm" @click="handleCreateAppointment">
                         <CalendarIcon class="mr-2 h-4 w-4" />
                         {{ t('appointment.new_btn') }}
                     </Button>
@@ -177,19 +168,13 @@ onMounted(() => {
                 <Card class="px-8">
                     <CardHeader class="px-0">
                         <CardTitle class="text-lg">{{ t('appointment.list_title') }}</CardTitle>
-                        <CardDescription>
-                            {{ t('appointment.viewing_appointment_for')}} {{ appointmentsStore.selectedDate }}
-                        </CardDescription>
                         <Separator />
                     </CardHeader>
                     <CardContent class="p-0">
                         <!-- CATCH THE EMITTED EVENTS -->
-                        <AppointmentsTable 
-                            @edit-appointment="handleEditAppointment"
-                            @delete-appointment="handleDeleteConfirmation" 
-                            @create-session="handleCreateSession"
-                            @create-follow-up="handleCreateFollowUp" 
-                        />
+                        <AppointmentsTable @edit-patient="handleEditAppointment"
+                            @delete-appointment="handleDeleteConfirmation" @create-session="handleCreateSession"
+                            @create-follow-up="handleCreateFollowUp" />
                     </CardContent>
                 </Card>
             </div>

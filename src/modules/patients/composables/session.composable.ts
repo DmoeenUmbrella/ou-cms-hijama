@@ -1,6 +1,6 @@
 import { ref, computed, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import { useAppointmentsStore } from "../stores/useAppointmentsStore";
+import { usePatientStore } from "../stores/usePatientStore";
 import { useServicesStore } from "@/stores/useServicesStore";
 import { validateForm } from "@/utils/helpers/validate";
 import type { Session, DropdownOption } from "@/types/appointment";
@@ -13,14 +13,14 @@ const validationSchema = {
   time: { type: "string", validate: "valid time" },
 } as const;
 
-export function useSessionForm(patientId: number | null) {
+export function useSessionForm(clientId: string | null) {
   const { t } = useI18n();
-  const appointmentsStore = useAppointmentsStore();
+  const appointmentsStore = usePatientStore();
   const servicesStore = useServicesStore();
 
   // BIND to a local form state specific for Session creation
   const form = ref({
-    patientId: patientId, // Required patient ID
+    clientId: clientId, // Required patient ID
     cupperName: null as string | null,
     serviceId: null as number | null,
     cupsCount: 0 as number,

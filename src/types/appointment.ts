@@ -1,7 +1,7 @@
 // --- Domain Models (New Flow) ---
 
 export interface Patient {
-  id: number;
+  id: string;
   name: string;
   phone: string;
   gender: "Male" | "Female";
@@ -11,25 +11,32 @@ export interface Patient {
 
 // A Session is a completed or active visit (Walk-in or converted Follow-up)
 export interface Session {
-  id: number;
-  patientId: number;
-  cupperName: string;
-  serviceId: number;
-  serviceName?: string; // Optional if joined
-  cupsCount: number;
+  id: string;
+  clientId: string;
+  clinicId: string;
+
+  phoneNumber: string;
+  gender: "Male" | "Female";
+
+  // Session Info (Shared for Registration & New Session)
+  technicianId: string;
+  serviceId: string | null | string;
+  numberOfCups: "";
   amount: number;
   paymentMethod: "Cash" | "Card" | "Transfer";
+
+  // Scheduling
+  date: string; // YYYY-MM-DD
+  time: string; // HH:MM
   notes: string;
-  date: string; // ISO
-  time: string; // ISO
-  status: "completed" | "in-progress";
+  reminder: string;
 }
 
 // A Follow-Up is a future scheduled appointment
 export interface FollowUp {
-  id: number;
-  patientId: number;
-  serviceId: number;
+  id: string;
+  clientId: string;
+  serviceId: string;
   serviceName?: string;
   date: string; // ISO
   time: string; // ISO
@@ -46,7 +53,7 @@ export interface RegisterPatientPayload {
   gender: string;
   // Initial Session Details
   cupperName: string;
-  serviceId: number;
+  serviceId: string;
   cupsCount: number;
   amount: number;
   paymentMethod: string;
@@ -58,10 +65,11 @@ export interface RegisterPatientPayload {
 
 // 2. New Session (Existing Patient) Payload
 export interface CreateSessionPayload {
-  patientId: number;
-  cupperName: string;
-  serviceId: number;
-  cupsCount: number;
+  id: "";
+  clientId: string;
+  clinicId: string;
+  technicianId: string;
+  numberOfCups: number;
   amount: number;
   paymentMethod: string;
   notes: string;
@@ -72,26 +80,23 @@ export interface CreateSessionPayload {
 
 // 3. New Follow-Up Payload
 export interface CreateFollowUpPayload {
-  patientId: number;
-  serviceId: number;
+  clientId: string;
   date: string;
-  time: string;
-  notes: string;
-  status: string; // 'scheduled'
 }
 
 // --- Form States (New Flow) ---
 
 export interface PatientFormState {
   // Patient Info
+  id: string;
   name: string;
-  phone: string;
+  phoneNumber: string;
   gender: "Male" | "Female";
 
   // Session Info (Shared for Registration & New Session)
-  cupperName: string;
-  serviceId: number | null;
-  cupsCount: number;
+  technicianId: string;
+  serviceId: string | null | string;
+  numberOfCups: "";
   amount: number;
   paymentMethod: "Cash" | "Card" | "Transfer";
 
@@ -99,12 +104,13 @@ export interface PatientFormState {
   date: string; // YYYY-MM-DD
   time: string; // HH:MM
   notes: string;
+  reminder: string;
 }
 
 export interface FollowUpFormState {
-  id: number | null;
-  patientId: number | null;
-  serviceId: number | null;
+  id: string | null;
+  clientId: string | null;
+  serviceId: string | null;
   date: string;
   time: string;
   notes: string;
@@ -121,15 +127,15 @@ export interface Appointment {
   price: string;
   status: "upcoming" | "completed" | "cancelled" | "no-show";
   date: string;
-  client_id: number | null;
-  service_id: number | null;
+  client_id: string | null;
+  service_id: string | null;
   notes: string;
 }
 
 export interface AppointmentPayload {
-  clientId: number;
-  clinicId: number;
-  serviceId: number;
+  clientId: string;
+  clinicId: string;
+  serviceId: string;
   date: string;
   time: string;
   duration: number;
@@ -137,9 +143,9 @@ export interface AppointmentPayload {
 }
 
 export interface AppointmentFormState {
-  id: number | null;
-  client_id: number | null;
-  service_id: number | null;
+  id: string | null;
+  client_id: string | null;
+  service_id: string | null;
   cupper: string | null;
   date: string;
   time: string;
@@ -148,6 +154,6 @@ export interface AppointmentFormState {
 }
 
 export interface DropdownOption {
-  id: number | string;
+  id: string | string;
   label: string;
 }

@@ -3,8 +3,8 @@ import { computed, ref, h, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 // Updated path to reflect the modular structure, assuming it's correct
-import { useAppointmentsStore } from '@/modules/appointment/stores/useAppointmentsStore'
-import type { Patient } from '@/types/appointments' // Correct type
+import { usePatientStore } from '@/modules/patients/stores/usePatientStore'
+import type { Patient } from '@/types/appointment' // Correct type
 import type { ColumnDef } from '@/types/table'
 import { useDebounceFn } from '@vueuse/core'
 import { format } from 'date-fns'
@@ -47,7 +47,7 @@ const emit = defineEmits([
 
 const { t } = useI18n()
 const router = useRouter()
-const store = useAppointmentsStore() // This store now handles 'patients'
+const store = usePatientStore() // This store now handles 'patients'
 
 // --- State for Filters ---
 const searchQuery = ref(store.filters.keyword)
@@ -137,7 +137,10 @@ const columns = computed<ColumnDef<Patient>[]>(() => [
             h(Button, {
                 variant: 'ghost', size: 'icon',
                 title: t('appointment.table.create_follow_up'),
-                onClick: () => emit('create-follow-up', row.original)
+                onClick: (d, j) => {
+                    debugger
+                    emit('create-follow-up', row.original)
+                }
             }, () => h(CalendarClock, { class: 'h-4 w-4 text-blue-600' })),
 
             // Action: View Details (Redirect to Patient Detail View)
