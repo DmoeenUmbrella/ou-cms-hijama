@@ -6,6 +6,7 @@ import { i18n } from "@/i18n";
 import type { Patient, PatientFormState } from "@/types/appointment";
 import { appointmentMutations, appointmentQueries } from "@/api/endpoints";
 import type { PatientPayload } from "@/api/endpoints/patient/interfaces";
+import { getPatientById } from "@/api/endpoints/patient/queries";
 
 export const usePatientStore = defineStore("patients", () => {
   // --- STATE ---
@@ -15,6 +16,8 @@ export const usePatientStore = defineStore("patients", () => {
   const isLoading = ref(false);
   const isAppointmentFormEditing = ref(false);
   const pageSize = ref(10);
+
+  const clientData = ref<Patient | null>();
 
   const { t } = i18n.global;
 
@@ -76,21 +79,28 @@ export const usePatientStore = defineStore("patients", () => {
         patients.value = response.data;
         totalPatients.value = response.total;
       } else {
-        if (response?.message?.toLowerCase()?.includes("No Clients Found")) {
-          toast.error(t("session.no_clients") || "Failed to fetch patients");
-        } else {
-          toast.error(t("session.create_failed") || "Failed to fetch patients");
-        }
+          // toast.error(t("session.create_failed") || "Failed to fetch patients");
       }
     } catch (error) {
       console.error(error);
-      toast.error(
-        t("session.create_failed") || "Failed to fetch patients"
-      );
+      if (response?.message?.toLowerCase()?.includes("No Clients Found")) {
+        toast.error(t("session.no_clients") || "Failed to fetch patients");
+      } else {
+        // toast.error(t("session.create_failed") || "Failed to fetch patients");
+      }
     } finally {
       isLoading.value = false;
     }
   };
+
+  const getClients = async (id: string) => {
+    try {
+      const response = await getPatientById(id);
+      return response
+    } catch (error) {
+      
+    }
+  }
 
   const createPatient = async (payload: PatientPayload) => {
     isLoading.value = true;
@@ -203,5 +213,6 @@ export const usePatientStore = defineStore("patients", () => {
     resetPatientForm,
     isAppointmentFormEditing,
     loadAppointmentForEdit,
+    getClients,
   };
 });

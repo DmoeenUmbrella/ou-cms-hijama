@@ -4,7 +4,7 @@ import { useI18n } from "vue-i18n";
 import type { Patient } from "@/types/appointment";
 import { useSessionStore } from "../stores/useSessionStore";
 import { useFollowupStore } from "../stores/useFollowUpStore";
-import dateToISOStringFormat, { timeToIsoDateString } from "@/utils/helpers/formatDateTime";
+import dateToISOStringFormat, { isoToReadableDate, timeToIsoDateString } from "@/utils/helpers/formatDateTime";
 
 export function useAppointmentView() {
   const patientStore = usePatientStore();
@@ -59,20 +59,26 @@ export function useAppointmentView() {
     openNewAppointmentModal();
   };
 
-  const handleCreateSession = (patient: Patient) => {
+  const handleCreateSession = async (patient: Patient) => {
     isEditing.value = false;
     currentAction.value = "create-session";
     selectedPatient.value = patient;
-    // populate session form with patient info
     openNewAppointmentModal();
+    const data = await patientStore.getClients(patient.id);
+    patient.lastSessionDate = isoToReadableDate(data?.lastAppointmentDate);
+    patient.totalSessions = data?.totalSessions;
+    // populate session form with patient info
   };
 
-  const handleCreateFollowUp = (patient: Patient) => {
+  const handleCreateFollowUp = async (patient: Patient) => {
     isEditing.value = false;
     currentAction.value = "create-followup";
     selectedPatient.value = patient;
     // populate followup form with patient info
     openNewAppointmentModal();
+    const data = await patientStore.getClients(patient.id);
+    patient.lastSessionDate = isoToReadableDate(data?.lastAppointmentDate);
+    patient.totalSessions = data?.totalSessions;
   };
 
 

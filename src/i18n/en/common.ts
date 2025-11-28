@@ -53,7 +53,7 @@ export default {
     services: "Services",
     sessions: "Sessions",
     users: "Users",
-    technicians: "Technicians",
+    technicians: "Cuppers",
   },
   footer: {
     promo: "Get more with",
@@ -137,7 +137,7 @@ export default {
       services: "Services",
       sessions: "Sessions",
       users: "Users",
-      technicians: "Technicians",
+      technicians: "Cuppers",
     },
     footer: {
       promo: "Get more with",

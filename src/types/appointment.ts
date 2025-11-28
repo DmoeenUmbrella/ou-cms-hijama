@@ -5,7 +5,7 @@ export interface Patient {
   name: string;
   phone: string;
   gender: "Male" | "Female";
-  totalSessions: number; // Calculated/Returned by backend
+  totalSessions: string; // Calculated/Returned by backend
   lastSessionDate: string | null; // YYYY-MM-DD
 }
 

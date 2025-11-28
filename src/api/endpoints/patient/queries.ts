@@ -6,6 +6,8 @@ import type {
   FollowUp,
   FetchParams,
 } from "./interfaces";
+import { toast } from "vue-sonner";
+import { i18n } from "@/i18n";
 
 // --- PATIENTS ---
 export const getPatients = async (
@@ -19,11 +21,14 @@ export const getPatients = async (
       date: params.date,
     },
   });
-
+  if (response?.data?.message?.toLowerCase()?.includes("no clients found")) {
+    toast.error(i18n.global.t("session.no_clients") || "Failed to fetch patients");
+  }
   return {
     data: response.data.data,
     total: response.data.totalCount ?? response.data.data.length,
     isSuccess: response.data.isSuccess,
+    message: response.data.message
   };
 };
 
