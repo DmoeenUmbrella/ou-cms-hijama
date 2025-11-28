@@ -102,6 +102,19 @@ export default {
       male: "ذكر",
       female: "أنثى",
     },
+    dialog: {
+        confirm_title: "تأكيد الإجراء",
+        cancel: "إلغاء",
+        confirm: "تأكيد"
+    },
+    login: {
+        login: 'تسجيل الدخول',
+        password: 'كلمة المرور',
+        remember: 'تذكرني',
+        pleaseEnterLogin: 'الرجاء إدخال اسم المستخدم',
+        pleaseEnterPassword: 'الرجاء إدخال كلمة المرور',
+        back: 'عودة',
+    },
 
     // Payment options
     payment: {

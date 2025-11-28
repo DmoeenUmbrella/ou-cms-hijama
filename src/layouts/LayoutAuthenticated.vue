@@ -3,7 +3,6 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 // @ts-ignore - Assuming these files exist from your previous project structure
 // @ts-ignore
-import { useDarkModeStore } from '@/stores/darkMode.js'
 
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'

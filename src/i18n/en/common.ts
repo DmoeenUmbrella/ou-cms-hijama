@@ -99,6 +99,11 @@ export default {
       import: "Import",
       view_details: "View Details",
     },
+    dialog: {
+        confirm_title: "Confirm Action",
+        cancel: "Cancel",
+        confirm: "Confirm"
+    },
     login: {
       login: "Login",
       password: "Password",
