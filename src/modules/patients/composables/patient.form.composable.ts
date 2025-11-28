@@ -1,5 +1,7 @@
-import { reactive, watch } from "vue";
+import { reactive, watch, onMounted } from "vue";
 import { validateForm } from "@/utils/helpers/validate";
+import { useTechnician } from "@/modules/technician/composables/useTechnician";
+import dateToISOStringFormat from "@/utils/helpers/formatDateTime";
 
 export function usePatientForm(props: {
   patient: any;
@@ -12,22 +14,23 @@ export function usePatientForm(props: {
     | null;
 }) {
   const form = reactive({
+    id: "",
     // Patient
     name: "",
     phoneNumber: "",
     gender: "",
-    numberOfCups: "",
-    amount: 0,
+    numberOfCups: "1",
+    amount: 1,
     paymentMethod: "",
     technicianId: "",
     notes: "",
-    date: "",
-    reminder: "",
+    date: null,
+    reminder: null,
 
     // Session
     clientId: "",
-    clinicId: "",
-    time: "",
+    clinicId: null,
+    time: null,
     price: 0,
 
     // Follow-up
@@ -36,11 +39,22 @@ export function usePatientForm(props: {
 
   const errors = reactive<Record<string, string>>({});
 
+  
+  const { fetchTechnicians, technicians, paginationInfo } = useTechnician();
+  onMounted(() => {
+    if (
+      !technicians?.value?.length ||
+      paginationInfo.value.totalCount > technicians?.value?.length
+    )
+      fetchTechnicians({ page: 1, count: 100 });
+  })
+
   // Prefill form if patient exists
   watch(
     () => props.patient,
     (patient) => {
       if (!patient) return;
+      form.id = patient.id || "";
       form.name = patient.name || "";
       form.phoneNumber = patient.phoneNumber || patient.phone || "";
       form.gender = patient.gender || "";
@@ -53,13 +67,17 @@ export function usePatientForm(props: {
   const getValidationSchema = () => {
     switch (props.currentAction) {
       case "create-patient":
-      case "edit-patient":
         return {
           name: { validate: "required", type: "string" },
           phoneNumber: { validate: "required", type: "string" },
           gender: { validate: "required", type: "string" },
-          // technicianId: { validate: "required", type: "string" },
-          paymentMethod: { validate: "required", type: "string" },
+          technicianId: { validate: "required", type: "string" },
+          numberOfCups: { validate: "required", type: "string" },
+        };
+      case "edit-patient":
+        return {
+          name: { validate: "required", type: "string" },
+          phoneNumber: { validate: "required", type: "string" },
         };
       case "create-session":
         return {
@@ -81,6 +99,8 @@ export function usePatientForm(props: {
   // Handle Save
   const handleSave = () => {
     const schema = getValidationSchema();
+    form.technicianId = form.technicianId ? form.technicianId.toString() : "";
+    form.date = form.date ? dateToISOStringFormat(form.date) : null;
     const { isValid, errors: validationErrors } = validateForm(form, schema);
 
     // Bind validation errors to reactive errors object
@@ -97,20 +117,21 @@ export function usePatientForm(props: {
       case "create-patient":
       case "edit-patient":
         return {
+          id: form.id,
           name: form.name,
           phoneNumber: form.phoneNumber,
           gender: form.gender,
           numberOfCups: form.numberOfCups,
           amount: form.amount,
           paymentMethod: form.paymentMethod,
-          technicianId: form.technicianId,
+          technicianId: form.technicianId.toString(),
           notes: form.notes,
           date: form.date,
           reminder: form.reminder,
         };
       case "create-session":
         return {
-          clientId: form.clientId,
+          clientId: form.id,
           clinicId: form.clinicId,
           technicianId: form.technicianId,
           date: form.date,
@@ -122,7 +143,7 @@ export function usePatientForm(props: {
         };
       case "create-followup":
         return {
-          clientId: form.clientId,
+          clientId: form.id,
           appointmentId: form.appointmentId,
           date: form.date,
         };
@@ -139,5 +160,6 @@ export function usePatientForm(props: {
     errors,
     handleSave,
     getInitials,
+    technicians,
   };
 }

@@ -13,7 +13,7 @@ export interface Patient {
 export interface Session {
   id: string;
   clientId: string;
-  clinicId: string;
+  clinicId: string | null;
 
   phoneNumber: string;
   gender: "Male" | "Female";
@@ -26,10 +26,10 @@ export interface Session {
   paymentMethod: "Cash" | "Card" | "Transfer";
 
   // Scheduling
-  date: string; // YYYY-MM-DD
-  time: string; // HH:MM
+  date: string | null; // YYYY-MM-DD
+  time: string | null; // HH:MM
   notes: string;
-  reminder: string;
+  reminder: string | null;
 }
 
 // A Follow-Up is a future scheduled appointment
@@ -67,14 +67,14 @@ export interface RegisterPatientPayload {
 export interface CreateSessionPayload {
   id: "";
   clientId: string;
-  clinicId: string;
+  clinicId: string | null;
   technicianId: string;
   numberOfCups: number;
   amount: number;
   paymentMethod: string;
   notes: string;
-  date: string;
-  time: string;
+  date: string | null;
+  time: string | null;
   status: string;
 }
 
@@ -134,7 +134,7 @@ export interface Appointment {
 
 export interface AppointmentPayload {
   clientId: string;
-  clinicId: string;
+  clinicId: string | null;
   serviceId: string;
   date: string;
   time: string;

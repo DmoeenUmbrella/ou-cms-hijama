@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // Chadcn UI Components
@@ -11,9 +10,13 @@ import { Button } from '@/components/ui/button'
 import Avatar from '@/components/ui/avatar/Avatar.vue'
 import AvatarFallback from '@/components/ui/avatar/AvatarFallback.vue'
 import { usePatientForm } from '../composables/patient.form.composable'
+import Popover from '@/components/ui/popover/Popover.vue'
+import PopoverTrigger from '@/components/ui/popover/PopoverTrigger.vue'
+import PopoverContent from '@/components/ui/popover/PopoverContent.vue'
+import Calendar from '@/components/ui/calendar/Calendar.vue'
+import { format } from 'date-fns'
 
 const emit = defineEmits(['submit', 'cancel'])
-
 // Props
 const props = defineProps<{
     patient: any
@@ -21,10 +24,11 @@ const props = defineProps<{
     currentAction: 'create-patient' | 'edit-patient' | 'create-session' | 'create-followup' | null
     technicians?: Array<{ id: string; name: string }>
 }>()
+const isEdit = props.currentAction === 'edit-patient'
 
 const { t } = useI18n()
 
-const { form, errors, handleSave, getInitials } = usePatientForm(props)
+const { form, errors, handleSave, getInitials, technicians } = usePatientForm(props)
 
 const onSubmit = () => {
     const payload = handleSave()
@@ -35,7 +39,7 @@ const onSubmit = () => {
 
 <template>
     <form @submit.prevent="onSubmit" class="space-y-6 max-h-[90dvh] overflow-auto">
-        <div v-if="patient?.name" class="space-y-4 border p-4 rounded-lg bg-muted/20">
+        <div v-if="patient?.name" class="space-y-4 border p-4 rounded-lg bg-muted/50 shadow-sm">
             <h4 class="font-semibold text-lg">{{ $t('patient.information') || 'Patient Information' }}</h4>
             <div class="grid grid-cols-2 md:grid-cols-2 gap-x-6 gap-y-2 text-sm justify-between">
                 <!-- Patient Name -->
@@ -81,85 +85,119 @@ const onSubmit = () => {
                 <span v-if="errors.phoneNumber" class="text-xs text-destructive">{{ errors.phoneNumber }}</span>
             </div>
 
-            <div class="grid gap-2">
-                <Label for="gender">{{ t('patient.patient.gender') || 'Gender' }} <span
-                        class="text-destructive">*</span></Label>
+            <div v-if="!isEdit" class="grid gap-2">
+                <Label for="gender">{{ t('patient.patient.gender') || 'Gender' }}
+                    <span class="text-destructive">*</span>
+                </Label>
                 <Select v-model="form.gender">
                     <SelectTrigger class="w-full" :class="{ 'border-destructive': errors.gender }">
                         <SelectValue placeholder="Select Gender" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="male">{{ t('patient.patient.male') }}</SelectItem>
+                        <SelectItem value="female">{{ t('patient.patient.female') }}</SelectItem>
+                        <SelectItem value="other">{{ t('patient.patient.other') }}</SelectItem>
                     </SelectContent>
                 </Select>
                 <span v-if="errors.gender" class="text-xs text-destructive">{{ errors.gender }}</span>
             </div>
 
-            <div class="grid gap-2">
-                <Label for="technicianId">{{ t('patient.patient.technician') || 'Technician' }} <span
-                        class="text-destructive">*</span></Label>
+            <div v-if="!isEdit" class="grid gap-2">
+                <Label for="technicianId">{{ t('patient.patient.technician') || 'Technician' }}
+                    <!-- <span class="text-destructive">*</span> -->
+                </Label>
                 <Select v-model="form.technicianId">
                     <SelectTrigger class="w-full" :class="{ 'border-destructive': errors.technicianId }">
                         <SelectValue placeholder="Select Technician" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem v-for="tech in props.technicians" :key="tech.id" :value="tech.id">{{ tech.name }}
+                        <SelectItem v-for="tech in technicians" :key="tech.id" :value="tech.id">{{ tech.name }}
                         </SelectItem>
                     </SelectContent>
                 </Select>
                 <span v-if="errors.technicianId" class="text-xs text-destructive">{{ errors.technicianId }}</span>
             </div>
 
-            <div class="grid gap-2">
-                <Label for="paymentMethod">{{ t('patient.patient.paymentMethod') || 'Payment Method' }} <span
-                        class="text-destructive">*</span></Label>
+            <div v-if="!isEdit" class="grid gap-2">
+                <Label for="paymentMethod">{{ t('patient.patient.paymentMethod') || 'Payment Method' }}
+                    <!-- <span class="text-destructive">*</span> -->
+                </Label>
                 <Select v-model="form.paymentMethod">
                     <SelectTrigger class="w-full" :class="{ 'border-destructive': errors.paymentMethod }">
-                        <SelectValue placeholder="Select Payment Method" />
+                        <SelectValue :placeholder="t('patient.payment_method')" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="Cash">Cash</SelectItem>
-                        <SelectItem value="Card">Card</SelectItem>
+                        <SelectItem value="Cash">{{ t('patient.cash') }}</SelectItem>
+                        <SelectItem value="Card">{{ t('patient.card') }}</SelectItem>
                     </SelectContent>
                 </Select>
                 <span v-if="errors.paymentMethod" class="text-xs text-destructive">{{ errors.paymentMethod }}</span>
             </div>
 
             <!-- Other fields remain the same (numberOfCups, amount, notes, date, reminder) -->
-            <div class="grid gap-2">
+            <div v-if="!isEdit" class="grid gap-2">
                 <Label for="numberOfCups">{{ t('patient.patient.numberOfCups') || 'Number of Cups' }}</Label>
                 <Input id="numberOfCups" v-model="form.numberOfCups" />
             </div>
 
-            <div class="grid gap-2">
+            <div v-if="!isEdit" class="grid gap-2">
                 <Label for="amount">{{ t('patient.patient.amount') || 'Amount' }}</Label>
                 <Input id="amount" type="number" v-model="form.amount" />
             </div>
 
-            <div class="grid gap-2 col-span-2">
+            <div v-if="!isEdit" class="grid gap-2 col-span-2">
                 <Label for="notes">{{ t('patient.patient.notes') || 'Notes' }}</Label>
                 <Textarea id="notes" v-model="form.notes" class="min-h-[100px]" />
             </div>
 
-            <div class="grid gap-2">
+            <div v-if="!isEdit" class="grid gap-2">
                 <Label for="date">{{ t('patient.patient.date') || 'Date' }}</Label>
-                <Input id="date" type="date" v-model="form.date" />
+                <Popover>
+                    <PopoverTrigger as-child>
+                        <Button variant="outline" class="w-full justify-start text-start font-normal"
+                            :class="{ 'text-muted-foreground': !form.date }">
+                            <span>{{ form.date ? format(new Date(form.date), 'PPP') : 'Select Date' }}</span>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent class="w-auto p-0">
+                        <Calendar v-model="form.date" mode="single" initial-focus />
+                    </PopoverContent>
+                </Popover>
             </div>
 
-            <div class="grid gap-2">
+            <div v-if="!isEdit" class="grid gap-2">
                 <Label for="reminder">{{ t('patient.patient.reminder') || 'Reminder' }}</Label>
-                <Input id="reminder" v-model="form.reminder" />
+                <Popover>
+                    <PopoverTrigger as-child>
+                        <Button variant="outline" class="w-full justify-start text-start font-normal"
+                            :class="{ 'text-muted-foreground': !form.reminder }">
+                            <span>{{ form.reminder ? format(new Date(form.reminder), 'PPP') : 'Select Date' }}</span>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent class="w-auto p-0">
+                        <Calendar v-model="form.reminder" mode="single" initial-focus />
+                    </PopoverContent>
+                </Popover>
             </div>
         </div>
 
         <!-- CREATE SESSION -->
         <div v-if="props.currentAction === 'create-session'" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="grid gap-2">
-                <Label for="date">{{ t('patient.session.date') || 'Date' }} <span
-                        class="text-destructive">*</span></Label>
-                <Input id="date" type="date" v-model="form.date" :class="{ 'border-destructive': errors.date }" />
+                <Label for="date">{{ t('patient.session.date') || 'Date' }}
+                    <span class="text-destructive">*</span>
+                </Label>
+                <Popover>
+                    <PopoverTrigger as-child>
+                        <Button variant="outline" class="w-full justify-start text-start font-normal"
+                            :class="{ 'text-muted-foreground': !form.date }">
+                            <span>{{ form.date ? format(new Date(form.date), 'PPP') : 'Select Date' }}</span>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent class="w-auto p-0">
+                        <Calendar v-model="form.date" mode="single" initial-focus />
+                    </PopoverContent>
+                </Popover>
                 <span v-if="errors.date" class="text-xs text-destructive">{{ errors.date }}</span>
             </div>
 
@@ -171,29 +209,32 @@ const onSubmit = () => {
             </div>
 
             <div class="grid gap-2">
-                <Label for="numberOfCups">{{ t('patient.session.numberOfCups') || 'Number of Cups' }} <span
-                        class="text-destructive">*</span></Label>
+                <Label for="numberOfCups">{{ t('patient.session.numberOfCups') || 'Number of Cups' }}
+                    <!-- <span class="text-destructive">*</span> -->
+                </Label>
                 <Input id="numberOfCups" v-model="form.numberOfCups"
                     :class="{ 'border-destructive': errors.numberOfCups }" />
                 <span v-if="errors.numberOfCups" class="text-xs text-destructive">{{ errors.numberOfCups }}</span>
             </div>
 
             <div class="grid gap-2">
-                <Label for="price">{{ t('patient.session.price') || 'Price' }} <span
-                        class="text-destructive">*</span></Label>
+                <Label for="price">{{ t('patient.session.price') || 'Price' }}
+                    <!-- <span class="text-destructive">*</span> -->
+                </Label>
                 <Input id="price" type="number" v-model="form.price" :class="{ 'border-destructive': errors.price }" />
                 <span v-if="errors.price" class="text-xs text-destructive">{{ errors.price }}</span>
             </div>
 
             <div class="grid gap-2">
-                <Label for="technicianId">{{ t('patient.patient.technician') || 'Technician' }} <span
-                        class="text-destructive">*</span></Label>
+                <Label for="technicianId">{{ t('patient.patient.technician') || 'Technician' }}
+                    <!-- <span class="text-destructive">*</span> -->
+                </Label>
                 <Select v-model="form.technicianId">
                     <SelectTrigger class="w-full" :class="{ 'border-destructive': errors.technicianId }">
                         <SelectValue placeholder="Select Technician" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem v-for="tech in props.technicians" :key="tech.id" :value="tech.id">{{ tech.name }}
+                        <SelectItem v-for="tech in technicians" :key="tech.id" :value="tech.id">{{ tech.name }}
                         </SelectItem>
                     </SelectContent>
                 </Select>
@@ -207,7 +248,17 @@ const onSubmit = () => {
 
             <div class="grid gap-2 col-span-2">
                 <Label for="reminder">{{ t('patient.session.reminder') || 'Reminder' }}</Label>
-                <Input id="reminder" v-model="form.reminder" />
+                <Popover>
+                    <PopoverTrigger as-child>
+                        <Button variant="outline" class="w-full justify-start text-start font-normal"
+                            :class="{ 'text-muted-foreground': !form.reminder }">
+                            <span>{{ form.reminder ? format(new Date(form.reminder), 'PPP') : 'Select Date' }}</span>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent class="w-auto p-0">
+                        <Calendar v-model="form.reminder" mode="single" initial-focus />
+                    </PopoverContent>
+                </Popover>
             </div>
         </div>
 
@@ -216,7 +267,17 @@ const onSubmit = () => {
             <div class="grid gap-2">
                 <Label for="date">{{ t('patient.followup.date') || 'Date' }} <span
                         class="text-destructive">*</span></Label>
-                <Input id="date" type="date" v-model="form.date" :class="{ 'border-destructive': errors.date }" />
+                <Popover>
+                    <PopoverTrigger as-child>
+                        <Button variant="outline" class="w-full justify-start text-start font-normal"
+                            :class="{ 'text-muted-foreground': !form.date }">
+                            <span>{{ form.date ? format(new Date(form.date), 'PPP') : 'Select Date' }}</span>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent class="w-auto p-0">
+                        <Calendar v-model="form.date" mode="single" initial-focus />
+                    </PopoverContent>
+                </Popover>
                 <span v-if="errors.date" class="text-xs text-destructive">{{ errors.date }}</span>
             </div>
         </div>

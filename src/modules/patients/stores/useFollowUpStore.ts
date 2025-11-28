@@ -51,13 +51,13 @@ export const useFollowupStore = defineStore("followUps", () => {
         totalFollowUps.value = response.total;
       } else {
         toast.error(
-          i18n.global.t("followup.fetch_error") || "Failed to fetch follow-ups"
+          i18n.global.t("session.create_failed") || "Failed to fetch follow-ups"
         );
       }
     } catch (error) {
       console.error(error);
       toast.error(
-        i18n.global.t("followup.fetch_error") || "Failed to fetch follow-ups"
+        i18n.global.t("session.create_failed") || "Failed to fetch follow-ups"
       );
     } finally {
       isLoading.value = false;
@@ -67,17 +67,23 @@ export const useFollowupStore = defineStore("followUps", () => {
   const createFollowUp = async (payload: FollowUpPayload) => {
     isLoading.value = true;
     try {
-      await appointmentMutations.createFollowUp({ ...payload });
-      toast.success(
-        i18n.global.t("followup.create_success") || "Follow-up created"
-      );
-      resetFormFollowUp();
-      await fetchFollowUps();
-      return true;
+      const response = await appointmentMutations.createFollowUp({ ...payload });
+      if (response.isSuccess) {
+        toast.success(
+          i18n.global.t("session.create_success") || "Follow-up created"
+        );
+        resetFormFollowUp();
+        // await fetchFollowUps();
+      } else {
+        toast.error(
+          i18n.global.t("session.create_failed") || "Failed to create follow-up"
+        );
+      }
+      return response;
     } catch (error) {
       console.error(error);
       toast.error(
-        i18n.global.t("followup.create_error") || "Failed to create follow-up"
+        i18n.global.t("session.create_failed") || "Failed to create follow-up"
       );
       return false;
     } finally {

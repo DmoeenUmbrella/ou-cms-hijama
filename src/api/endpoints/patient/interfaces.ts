@@ -22,8 +22,8 @@ export interface PatientPayload {
   paymentMethod?: string;
   technicianId?: string;
   notes?: string;
-  date?: string;
-  reminder?: string;
+  date?: string | null;
+  reminder?: string | null;
 }
 
 export interface Patient {
@@ -37,31 +37,31 @@ export interface Patient {
 
 export interface SessionPayload {
   clientId: string;
-  clinicId: string;
+  clinicId: string | null;
   technicianId?: string;
-  date: string;
-  time?: string;
+  date: string | null;
+  time?: string | null;
   notes?: string;
-  numberOfCups?: string;
-  reminder?: string;
-  price?: number;
+  numberOfCups?: string | null;
+  reminder?: string | null;
+  price?: number | null;
 }
 
 export interface Session {
   id: string;
-  clientId: string;
-  clinicId: string;
+  clientId: string | null;
+  clinicId: string | null;
   technicianId?: string;
-  date: string;
-  time?: string;
-  notes?: string;
+  date: string | null;
+  time?: string | null;
+  notes?: string | null;
   numberOfCups?: string;
   price?: number;
 }
 
 export interface FollowUpPayload {
   clientId: number | string;
-  date: string;
+  date: string | null;
 }
 
 export interface FollowUp {

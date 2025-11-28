@@ -14,6 +14,10 @@ export default {
     follow_up_settings: "إعدادات المتابعة",
     create_session_follow_up: "إنشاء جلسة ومتابعة",
 
+    create_success: "تم إنشاء الجلسة بنجاح",
+    create_failed: "حدث خطأ ما، يرجى المحاولة مرة أخرى",
+    no_clients: "لا يوجد مرضى متاحون لهذا المصطلح البحث",
+
     follow_up_type: "نوع المتابعة",
     priority_level: "مستوى الأولوية",
     priority_high: "أولوية عالية",
@@ -31,6 +35,8 @@ export default {
       "سيتم إنشاء تذكير تلقائيًا وسيتم تعيين الحالة على 'قيد الانتظار'. سيتابع النظام الإنجاز ويرسل الإشعارات بناءً على نوع المتابعة المحدد.",
     schedule_follow_up: "جدول المتابعة",
     follow_up_details: "تفاصيل المتابعة",
+
+    follow_up_success: "تم إنشاء المتابعة بنجاح",
 
     // Form Fields
     client_name: "اسم العميل",

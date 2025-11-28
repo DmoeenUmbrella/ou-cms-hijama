@@ -50,8 +50,8 @@ const { t } = useI18n()
 onMounted(() => {
     // Pre-load necessary data for the view
     appointmentsStore.fetchPatients()
-    customersStore.fetchClients()
-    servicesStore.fetchServices()
+    // customersStore.fetchClients()
+    // servicesStore.fetchServices()
 })
 
 </script>
@@ -166,10 +166,7 @@ onMounted(() => {
 
                 <!-- Right Column: Appointments List -->
                 <Card class="px-8">
-                    <CardHeader class="px-0">
-                        <CardTitle class="text-lg">{{ t('appointment.list_title') }}</CardTitle>
-                        <Separator />
-                    </CardHeader>
+                    
                     <CardContent class="p-0">
                         <!-- CATCH THE EMITTED EVENTS -->
                         <AppointmentsTable @edit-patient="handleEditAppointment"

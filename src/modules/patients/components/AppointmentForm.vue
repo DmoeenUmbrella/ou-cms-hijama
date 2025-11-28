@@ -148,8 +148,8 @@ const handleFinalConfirmation = () => {
 
                 <!-- Medical Notes -->
                 <div class="grid gap-2">
-                    <Label for="medicalNotes">{{ $t('patient.medical_notes') || 'Medical Notes' }}</Label>
-                    <Textarea id="medicalNotes" v-model="form.medicalNotes"
+                    <Label for="notes">{{ $t('patient.medical_notes') || 'Medical Notes' }}</Label>
+                    <Textarea id="notes" v-model="form.notes"
                         :placeholder="$t('patient.medical_notes_placeholder') || 'Any relevant medical history...'"
                         class="resize-none" />
                 </div>

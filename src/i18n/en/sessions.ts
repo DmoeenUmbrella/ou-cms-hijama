@@ -32,6 +32,10 @@ export default {
     schedule_follow_up: "Schedule Follow-up",
     follow_up_details: "Follow-up details",
 
+    create_success: "The sesssion has been created successfully",
+    create_failed: "Something went wrong, please try again",
+    no_clients: "No patients available for this search term", 
+
     // Form Fields
     client_name: "Client Name",
     service_type: "Service Type",
@@ -58,6 +62,8 @@ export default {
     // Follow-Up Reminder fields
     follow_up_date: "Follow-up Date",
     reminder_type: "Reminder Type",
+
+    follow_up_success: "Follow-up has been created successfully",
 
     // Confirmation Step
     success_title: "Session Successfully Created!",

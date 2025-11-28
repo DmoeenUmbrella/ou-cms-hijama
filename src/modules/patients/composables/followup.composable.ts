@@ -92,7 +92,7 @@ export function useFollowUpForm(clientId: string | null) {
   };
 
   onMounted(() => {
-    servicesStore.fetchServices();
+    // servicesStore.fetchServices();
   });
 
   return {

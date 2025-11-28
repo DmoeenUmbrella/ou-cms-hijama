@@ -2,19 +2,19 @@ import apiClient from "@/api/axios/config";
 
 // Types
 export interface Appointment {
-  id: number;
-  clientId: number;
-  technicianId: number | null;
-  userId: number;
+  id: string | null;
+  clientId: string | null;
+  technicianId: string | null;
+  userId: string | null;
   userEmail: string;
-  clinicId: number;
+  clinicId: string | null;
   isDeleted: boolean;
   date: string;
   notes: string;
   time: string;
   createdOn: string;
   modifiedOn: string | null;
-  numberOfCups: string;
+  numberOfCups: string | null;
   price: number;
   deletedTime: string | null;
 }
@@ -34,7 +34,7 @@ export interface CustomerDetails {
   phoneNumber: string;
   gender: string;
   dateOfBirth: string | null;
-  medicalNotes: string | null;
+  notes: string | null;
   isActive: boolean;
   isDeleted: boolean;
   createdOn: string;

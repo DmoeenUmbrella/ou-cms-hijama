@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import type { Patient } from "@/types/appointment";
 import { useSessionStore } from "../stores/useSessionStore";
 import { useFollowupStore } from "../stores/useFollowUpStore";
+import dateToISOStringFormat, { timeToIsoDateString } from "@/utils/helpers/formatDateTime";
 
 export function useAppointmentView() {
   const patientStore = usePatientStore();
@@ -58,16 +59,18 @@ export function useAppointmentView() {
     openNewAppointmentModal();
   };
 
-  const handleCreateSession = () => {
+  const handleCreateSession = (patient: Patient) => {
     isEditing.value = false;
     currentAction.value = "create-session";
+    selectedPatient.value = patient;
     // populate session form with patient info
     openNewAppointmentModal();
   };
 
-  const handleCreateFollowUp = () => {
+  const handleCreateFollowUp = (patient: Patient) => {
     isEditing.value = false;
     currentAction.value = "create-followup";
+    selectedPatient.value = patient;
     // populate followup form with patient info
     openNewAppointmentModal();
   };
@@ -89,34 +92,51 @@ export function useAppointmentView() {
 
   const handleFormSubmit = async (payload: any) => {
     const action = currentAction.value;
-    debugger
+
+    // Helper to safely transform date fields
+    const formatDateField = (field?: string | Date) =>
+      field ? dateToISOStringFormat(field) : null;
+
+    // Helper for session time
+    const formatSessionTime = (date?: string, time?: string) =>
+      date && time ? timeToIsoDateString(date, time) : null;
+
     try {
       let response;
 
       switch (action) {
         case "create-patient":
-          response = await patientStore.createPatient(payload);
+          response = await patientStore.createPatient({
+            ...payload,
+            reminder: formatDateField(payload.reminder),
+            date: formatDateField(payload.date),
+          });
           break;
 
         case "edit-patient":
-          response = await patientStore.updatePatient(
-            payload
-          );
+          response = await patientStore.updatePatient(payload);
           break;
 
         case "create-session":
-          response = await sessionsStore.createSession(payload);
+          response = await sessionsStore.createSession({
+            ...payload,
+            date: formatDateField(payload.date),
+            reminder: formatDateField(payload.reminder),
+            time: formatSessionTime(payload.date, payload.time),
+          });
           break;
 
         case "create-followup":
-          response = await followupsStore.createFollowUp(payload);
+          response = await followupsStore.createFollowUp({
+            ...payload,
+            date: formatDateField(payload.date),
+          });
           break;
 
         default:
-          throw new Error("Unknown form action");
+          throw new Error(`Unknown form action: ${action}`);
       }
 
-      // Only proceed if success
       if (response?.isSuccess) {
         handleFormSubmitSuccess();
       } else {
@@ -126,6 +146,7 @@ export function useAppointmentView() {
       console.error("Submit error:", err);
     }
   };
+
 
   const handleFormSubmitSuccess = () => {
     // Closes the modal from where the success event originated

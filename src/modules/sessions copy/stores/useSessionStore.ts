@@ -23,7 +23,7 @@ export const useSessionStore = defineStore("sessions", () => {
   const formSession = ref<Session>({
     id: "",
     clientId: "",
-    clinicId: "",
+    clinicId: null,
     phoneNumber: "",
     gender: "Male",
     numberOfCups: "",
@@ -32,8 +32,8 @@ export const useSessionStore = defineStore("sessions", () => {
     technicianId: "",
     notes: "",
     date: new Date().toISOString().slice(0, 10),
-    reminder: "",
-    time: "",
+    reminder: null,
+    time: null,
     serviceId: "",
   });
 
@@ -74,13 +74,13 @@ export const useSessionStore = defineStore("sessions", () => {
         totalSessions.value = response.total;
       } else {
         toast.error(
-          i18n.global.t("session.fetch_error") || "Failed to fetch sessions"
+          i18n.global.t("session.create_failed") || "Failed to fetch sessions"
         );
       }
     } catch (error) {
       console.error(error);
       toast.error(
-        i18n.global.t("session.fetch_error") || "Failed to fetch sessions"
+        i18n.global.t("session.create_failed") || "Failed to fetch sessions"
       );
     } finally {
       isLoading.value = false;
@@ -101,7 +101,7 @@ export const useSessionStore = defineStore("sessions", () => {
     } catch (error) {
       console.error(error);
       toast.error(
-        i18n.global.t("session.create_error") || "Failed to create session"
+        i18n.global.t("session.create_failed") || "Failed to create session"
       );
       return false;
     } finally {

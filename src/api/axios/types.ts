@@ -1,7 +1,7 @@
 export interface ApiResponse<T = any> {
   data: T;
   message?: string;
-  status: number;
+  isSuccess: boolean;
 }
 
 export interface ApiError {

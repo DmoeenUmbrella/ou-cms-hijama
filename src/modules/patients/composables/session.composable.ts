@@ -88,7 +88,7 @@ export function useSessionForm(clientId: string | null) {
 
   onMounted(() => {
     // Fetch necessary data for dropdowns
-    servicesStore.fetchServices();
+    // servicesStore.fetchServices();
   });
 
   return {

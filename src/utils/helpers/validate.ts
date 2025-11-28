@@ -50,7 +50,6 @@ export function validateForm(formData, schema) {
             if (rule.type == 'password') {
                 // if (!validateEmail(value)) {
                 errorKey = getPasswordError(value);
-                debugger
                 // }
             }
             else if (rule.type == 'email') {

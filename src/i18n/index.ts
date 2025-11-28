@@ -4,7 +4,6 @@ import ar from "./ar";
 import type { MessageSchema, LocaleType } from "@/types/i18n";
 
 export const messages = { en, ar };
-
 // List of supported locales (must match LocaleType)
 export const availableLocales: readonly LocaleType[] = ["en", "ar"];
 

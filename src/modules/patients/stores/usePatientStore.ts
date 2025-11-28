@@ -14,6 +14,9 @@ export const usePatientStore = defineStore("patients", () => {
   const selectedPatient = ref<Patient | null>(null);
   const isLoading = ref(false);
   const isAppointmentFormEditing = ref(false);
+  const pageSize = ref(10);
+
+  const { t } = i18n.global;
 
   const filters = ref({
     page: 1,
@@ -73,14 +76,16 @@ export const usePatientStore = defineStore("patients", () => {
         patients.value = response.data;
         totalPatients.value = response.total;
       } else {
-        toast.error(
-          i18n.global.t("patient.fetch_error") || "Failed to fetch patients"
-        );
+        if (response?.message?.toLowerCase()?.includes("No Clients Found")) {
+          toast.error(t("session.no_clients") || "Failed to fetch patients");
+        } else {
+          toast.error(t("session.create_failed") || "Failed to fetch patients");
+        }
       }
     } catch (error) {
       console.error(error);
       toast.error(
-        i18n.global.t("patient.fetch_error") || "Failed to fetch patients"
+        t("session.create_failed") || "Failed to fetch patients"
       );
     } finally {
       isLoading.value = false;
@@ -92,18 +97,20 @@ export const usePatientStore = defineStore("patients", () => {
     try {
       // const payload = { ...formPatient.value };
       const data = await appointmentMutations.createPatient(payload);
-      toast.success(
-        i18n.global.t("patient.create_success") ||
-          "Patient created successfully"
-      );
-      resetPatientForm();
-      await fetchPatients();
+      if(data.isSuccess) {
+        toast.success(
+          t("patient.create_success") ||
+            "Patient created successfully"
+        );
+        resetPatientForm();
+        await fetchPatients();
+      } else {
+        toast.error(t("session.create_failed") || "Failed to create patient");
+      }
       return data;
     } catch (error) {
       console.error(error);
-      toast.error(
-        i18n.global.t("patient.create_error") || "Failed to create patient"
-      );
+      toast.error(t("session.create_failed") || "Failed to create patient");
       return false;
     } finally {
       isLoading.value = false;
@@ -111,23 +118,24 @@ export const usePatientStore = defineStore("patients", () => {
   };
 
   const updatePatient = async (payload: PatientPayload) => {
-    if (!formPatient.value.id) return false;
+    if (!payload.id) return false;
     isLoading.value = true;
     try {
       // const payload = { ...formPatient.value };
       const data = await appointmentMutations.updatePatient(payload);
-      toast.success(
-        i18n.global.t("patient.update_success") ||
-          "Patient updated successfully"
-      );
-      resetPatientForm();
-      await fetchPatients();
+      if(data.isSuccess) {
+        toast.success(
+          t("patient.update_success") || "Patient updated successfully"
+        );
+        resetPatientForm();
+        await fetchPatients();
+      } else {
+        toast.error(t("session.create_failed") || "Failed to update patient");
+      }
       return data;
     } catch (error) {
       console.error(error);
-      toast.error(
-        i18n.global.t("patient.update_error") || "Failed to update patient"
-      );
+      toast.error(t("session.create_failed") || "Failed to update patient");
       return false;
     } finally {
       isLoading.value = false;
@@ -140,12 +148,12 @@ export const usePatientStore = defineStore("patients", () => {
       await appointmentMutations.deletePatient(id);
       patients.value = patients.value.filter((p) => p.id !== id);
       toast.success(
-        i18n.global.t("patient.delete_success") || "Patient deleted"
+        t("patient.delete_success") || "Patient deleted"
       );
     } catch (error) {
       console.error(error);
       toast.error(
-        i18n.global.t("patient.delete_error") || "Failed to delete patient"
+        t("patient.delete_error") || "Failed to delete patient"
       );
     } finally {
       isLoading.value = false;
@@ -181,6 +189,7 @@ export const usePatientStore = defineStore("patients", () => {
     selectedPatient,
     isLoading,
     filters,
+    pageSize,
     formPatient,
 
     // Getters

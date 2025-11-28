@@ -7,6 +7,12 @@ export default {
     medical_notes: "Medical Notes",
     medical_notes_placeholder: "Any relevant medical history...",
     dob: "Date of Birth",
+    create_success: "The patient has been created successfully",
+    update_success: "The patient has been updated successfully",
+    payment_method: "Select Payment Method",
+    card: "Card",
+    cash: "Cash",
+
     validation: {
       required: "This field is required",
     },
@@ -19,6 +25,9 @@ export default {
       name: "Name",
       phone: "Phone",
       gender: "Gender",
+      male: "Male",
+      female: "Female",
+      other: "Other",
       technician: "Technician",
       paymentMethod: "Payment Method",
       numberOfCups: "Number of Cups",

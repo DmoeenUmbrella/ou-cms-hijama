@@ -25,7 +25,7 @@ const isEditing = ref(false)
 const serviceToEdit = computed(() => servicesStore.formService)
 
 onMounted(() => {
-    servicesStore.fetchServices()
+    // servicesStore.fetchServices()
 })
 
 const modalTitle = computed(() =>

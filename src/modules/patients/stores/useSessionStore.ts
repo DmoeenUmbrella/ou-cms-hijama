@@ -12,6 +12,8 @@ export const useSessionStore = defineStore("sessions", () => {
   const totalSessions = ref(0);
   const isLoading = ref(false);
 
+  const { t } = i18n.global
+
   const filters = ref({
     page: 1,
     count: 10,
@@ -23,9 +25,9 @@ export const useSessionStore = defineStore("sessions", () => {
   const formSession = ref<CreateSessionPayload>({
     id: "",
     clientId: "",
-    clinicId: "",
-    serviceId: "",
-    cupsCount: 0,
+    clinicId: null,
+    numberOfCups: 0,
+    technicianId: "",
     amount: 0,
     paymentMethod: "Cash",
     notes: "",
@@ -68,13 +70,13 @@ export const useSessionStore = defineStore("sessions", () => {
         totalSessions.value = response.total;
       } else {
         toast.error(
-          i18n.global.t("session.fetch_error") || "Failed to fetch sessions"
+          t("session.create_failed") || "Failed to fetch sessions"
         );
       }
     } catch (error) {
       console.error(error);
       toast.error(
-        i18n.global.t("session.fetch_error") || "Failed to fetch sessions"
+        t("session.create_failed") || "Failed to fetch sessions"
       );
     } finally {
       isLoading.value = false;
@@ -84,17 +86,25 @@ export const useSessionStore = defineStore("sessions", () => {
   const createSession = async (payload: SessionPayload) => {
     isLoading.value = true;
     try {
-      await appointmentMutations.createSession({ ...payload });
-      toast.success(
-        i18n.global.t("session.create_success") || "Session created"
-      );
-      resetFormSession();
-      await fetchSessions();
-      return true;
+
+      const response = await appointmentMutations.createSession({
+        ...payload,
+      });
+
+      if(response.isSuccess) {
+        toast.success(
+          t("session.create_success") || "Session created"
+        );
+        resetFormSession();
+        await fetchSessions();
+        return response;
+      } else {
+        toast.error(t("session.create_failed") || "Failed to create session");
+      }
     } catch (error) {
       console.error(error);
       toast.error(
-        i18n.global.t("session.create_error") || "Failed to create session"
+        t("session.create_failed") || "Failed to create session"
       );
       return false;
     } finally {
@@ -107,7 +117,7 @@ export const useSessionStore = defineStore("sessions", () => {
     try {
       await appointmentMutations.updateSession({ ...payload });
       toast.success(
-        i18n.global.t("session.update_success") || "Session updated"
+        t("session.update_success") || "Session updated"
       );
       resetFormSession();
       await fetchSessions();
@@ -115,7 +125,7 @@ export const useSessionStore = defineStore("sessions", () => {
     } catch (error) {
       console.error(error);
       toast.error(
-        i18n.global.t("session.update_error") || "Failed to update session"
+        t("session.update_error") || "Failed to update session"
       );
       return false;
     } finally {
@@ -129,12 +139,12 @@ export const useSessionStore = defineStore("sessions", () => {
       await appointmentMutations.deleteSession(id);
       sessions.value = sessions.value.filter((s) => s.id !== id);
       toast.success(
-        i18n.global.t("session.delete_success") || "Session deleted"
+        t("session.delete_success") || "Session deleted"
       );
     } catch (error) {
       console.error(error);
       toast.error(
-        i18n.global.t("session.delete_error") || "Failed to delete session"
+        t("session.delete_error") || "Failed to delete session"
       );
     } finally {
       isLoading.value = false;

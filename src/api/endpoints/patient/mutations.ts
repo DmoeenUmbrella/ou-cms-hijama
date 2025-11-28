@@ -13,8 +13,13 @@ export const createPatient = async (payload: PatientPayload) => {
 };
 
 export const updatePatient = async (payload: PatientPayload) => {
+  const updatePayload = {
+    id: payload.id,
+    name: payload.name,
+    phoneNumber: payload.phoneNumber,
+  };
   const response = await apiClient.put<ApiResponse<any>>("/clients", {
-    ...payload,
+    ...updatePayload,
   });
   return response.data;
 };

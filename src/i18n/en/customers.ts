@@ -7,7 +7,8 @@ export default {
     total_spent: "Total Spent",
     last_visit: "Last Visit",
     session_history: "Session History",
-    session_history_description: "Complete history of all sessions for this customer",
+    session_history_description:
+      "Complete history of all sessions for this customer",
     no_session_history: "No session history available.",
     no_sessions_found: "No sessions found",
     loading_appointments: "Loading appointments...",
@@ -44,6 +45,10 @@ export default {
         reminder: "Reminder",
         total_sessions: "Total sessions",
         last_visit: "Last session",
+        created_on: "Created on",
+        active: "Active",
+        in_active: "Inctive",
+        status: "Status"
       },
       sampleModal: "Sample Modal",
       confirmModal: "Please confirm",
