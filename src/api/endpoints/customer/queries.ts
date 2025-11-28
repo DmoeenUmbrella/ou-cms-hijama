@@ -72,6 +72,34 @@ export interface GetAppointmentsParams {
   count?: number;
 }
 
+// Follow-Up Types
+export interface FollowUpItem {
+  id: number;
+  appointmentId: number;
+  clientId: number;
+  date: string;
+  deletedTime: string | null;
+  isDeleted: boolean;
+}
+
+export interface FollowUpData {
+  data: FollowUpItem[];
+  totalCount: number;
+}
+
+export interface FollowUpsResponse {
+  isSuccess: boolean;
+  data: {
+    upcoming: FollowUpData;
+    past: FollowUpData;
+  };
+  message: string;
+}
+
+export interface GetFollowUpsParams {
+  clientId: string | number;
+}
+
 // Get Customer by ID with full details including sessions
 export const getCustomerById = async (id: string | number): Promise<CustomerDetailsResponse> => {
   const response = await apiClient.get<CustomerDetailsResponse>(`/clients/${id}`);
@@ -98,6 +126,26 @@ export const getCustomerAppointments = async (
   
   if (!response.data.isSuccess) {
     throw new Error(response.data.message || 'Failed to fetch appointments');
+  }
+  
+  return response.data;
+};
+
+// Get Customer Follow-Ups
+export const getCustomerFollowUps = async (
+  params: GetFollowUpsParams
+): Promise<FollowUpsResponse> => {
+  const { clientId } = params;
+  
+  const response = await apiClient.get<FollowUpsResponse>(
+    `/follow-up/clientId`,
+    {
+      params: { clientId }
+    }
+  );
+  
+  if (!response.data.isSuccess) {
+    throw new Error(response.data.message || 'Failed to fetch follow-ups');
   }
   
   return response.data;
