@@ -1,35 +1,31 @@
 import { toast } from "vue-sonner"
 
+export const notifySuccess = (message: string) => {
+  toast.success(message)
+}
+
+export const notifyError = (message: string) => {
+  toast.error(message)
+}
+
+export const notifyWarning = (message: string) => {
+  toast(message)
+}
+
+export const notifyPromise = <T>(promise: Promise<T>, messages: { loading: string; success: string; error: string }) => {
+  toast.promise(promise, {
+    loading: messages.loading,
+    success: messages.success,
+    error: messages.error,
+  })
+
+  return promise
+}
+
+// Export Toast object for backward compatibility
 export const Toast = {
-  success(message: string, description?: string) {
-    toast.success(message, { description })
-  },
-
-  error(message: string, description?: string) {
-    toast.error(message, { description })
-  },
-
-  warning(message: string, description?: string) {
-    toast.warning(message, { description })
-  },
-
-  info(message: string, description?: string) {
-    toast(message, { description })
-  },
-
-  promise<T>(promise: Promise<T>, {
-    loading = "Loading...",
-    success = "Success!",
-    error = "Something went wrong"
-  }: {
-    loading?: string
-    success?: string | ((data: T) => string)
-    error?: string | ((error: any) => string)
-  }) {
-    return toast.promise(promise, {
-      loading,
-      success,
-      error,
-    })
-  }
+  success: notifySuccess,
+  error: notifyError,
+  warning: notifyWarning,
+  promise: notifyPromise,
 }

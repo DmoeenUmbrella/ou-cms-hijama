@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Wrench, Plus } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
+import { useConfirmDialogStore } from '@/stores/confirmDialogStore'
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
 import TechniciansTable from '@/modules/technician/components/TechniciansTable.vue'
 import TechnicianFormDialog from '@/modules/technician/components/TechnicianFormDialog.vue'
@@ -12,13 +13,13 @@ import { useTechnician } from '@/modules/technician/composables/useTechnician'
 import type { CreateTechnicianPayload, UpdateTechnicianPayload } from '@/api/endpoints/technician/mutations'
 
 const { t } = useI18n()
+const dialog = useConfirmDialogStore()
 
 const { 
   fetchTechnicians, 
   addTechnician, 
   editTechnician, 
-  removeTechnician, 
-  isLoading 
+  removeTechnician
 } = useTechnician()
 
 interface TechnicianFormData {
@@ -43,7 +44,9 @@ const handleEditTechnician = (technician: any) => {
 
 // Handle delete technician
 const handleDeleteTechnician = async (technician: any) => {
-  if (confirm(t('technicians.messages.delete_confirm'))) {
+  const confirmed = await dialog.confirm(t('technicians.messages.delete_confirm'))
+  
+  if (confirmed) {
     try {
       await removeTechnician(technician.id)
       toast.success(t('technicians.messages.delete_success'))
