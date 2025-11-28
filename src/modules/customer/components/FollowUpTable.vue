@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { Appointment } from '@/api/endpoints/customer/queries'
+import type { FollowUpItem } from '@/api/endpoints/customer/queries'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { format } from 'date-fns'
-import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
 const { t, locale } = useI18n()
 
@@ -24,34 +22,32 @@ const toArabicNumerals = (num: number | string): string => {
 const isRTL = computed(() => locale.value === 'ar')
 
 const props = defineProps<{
-  sessions: Appointment[]
-  totalAppointments: number
+  followUps: FollowUpItem[]
+  totalFollowUps: number
   currentPage: number
   itemsPerPage: number
   isLoading: boolean
+  type: 'upcoming' | 'past'
 }>()
 
 const emit = defineEmits<{
   'page-change': [page: number]
 }>()
 
-const formattedSessions = computed(() => {
-  return props.sessions.map(session => ({
-    id: session.id,
-    sessionNumber: `#${toArabicNumerals(session.id)}`,
-    date: format(new Date(session.date), 'yyyy-MM-dd'),
-    service: session.notes || 'Hijama Session',
-    duration: '-', // API doesn't provide duration
-    price: toArabicNumerals(session.price),
-    numberOfCups: toArabicNumerals(session.numberOfCups),
-    notes: session.notes
+const formattedFollowUps = computed(() => {
+  return props.followUps.map(followUp => ({
+    id: followUp.id,
+    followUpId: `#${toArabicNumerals(followUp.id)}`,
+    appointmentId: toArabicNumerals(followUp.appointmentId),
+    clientId: toArabicNumerals(followUp.clientId),
+    date: new Date(followUp.date).toISOString().split('T')[0],
   }))
 })
 
 // Computed property for text alignment
 const textAlign = computed(() => isRTL.value ? 'text-right' : 'text-left')
 
-const totalPages = computed(() => Math.ceil(props.totalAppointments / props.itemsPerPage))
+const totalPages = computed(() => Math.ceil(props.totalFollowUps / props.itemsPerPage))
 
 const canGoPrevious = computed(() => props.currentPage > 1)
 const canGoNext = computed(() => props.currentPage < totalPages.value)
@@ -74,43 +70,39 @@ const handleNextPage = () => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>{{ t('customers.table.session') }}</TableHead>
-          <TableHead>{{ t('customers.table.date') }}</TableHead>
-          <TableHead>{{ t('customers.table.service') }}</TableHead>
-          <TableHead>{{ t('customers.table.cups') }}</TableHead>
-          <TableHead class="text-right">{{ t('customers.table.price') }}</TableHead>
+          <TableHead>{{ t('customers.table.follow_up_id') }}</TableHead>
+          <TableHead>{{ t('customers.table.appointment_id') }}</TableHead>
+          <TableHead>{{ t('customers.table.client_id') }}</TableHead>
+          <TableHead>{{ t('customers.table.follow_up_date') }}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         <TableRow v-if="isLoading">
-          <TableCell colspan="5" class="text-center py-8 text-muted-foreground">
-            {{ t('customers.loading_appointments') }}
+          <TableCell colspan="4" class="text-center py-8 text-muted-foreground">
+            {{ t('customers.loading_follow_ups') }}
           </TableCell>
         </TableRow>
-        <TableRow v-else-if="formattedSessions.length === 0">
-          <TableCell colspan="5" class="text-center py-8 text-muted-foreground">
-            {{ t('customers.no_sessions_found') }}
+        <TableRow v-else-if="formattedFollowUps.length === 0">
+          <TableCell colspan="4" class="text-center py-8 text-muted-foreground">
+            {{ t('customers.no_follow_ups_found') }}
           </TableCell>
         </TableRow>
-        <TableRow v-for="session in formattedSessions" :key="session.id" v-else>
-          <TableCell :class="['font-medium', textAlign]">{{ session.sessionNumber }}</TableCell>
-          <TableCell :class="textAlign">{{ session.date }}</TableCell>
-          <TableCell :class="textAlign">{{ session.service }}</TableCell>
-          <TableCell :class="textAlign">{{ session.numberOfCups }}</TableCell>
-          <TableCell :class="[textAlign, 'font-semibold', 'text-emerald-600']">
-            {{ session.price }} AED
-          </TableCell>
+        <TableRow v-for="followUp in formattedFollowUps" :key="followUp.id" v-else>
+          <TableCell :class="['font-medium', textAlign]">{{ followUp.followUpId }}</TableCell>
+          <TableCell :class="textAlign">{{ followUp.appointmentId }}</TableCell>
+          <TableCell :class="textAlign">{{ followUp.clientId }}</TableCell>
+          <TableCell :class="textAlign">{{ followUp.date }}</TableCell>
         </TableRow>
       </TableBody>
     </Table>
 
     <!-- Pagination -->
-    <div v-if="!isLoading && totalAppointments > 0" class="flex items-center justify-between px-4 py-4 border-t">
-     <div class="text-sm text-gray-700 dark:text-gray-300">
-        {{ t('customers.table.showing', { 
+    <div v-if="!isLoading && totalFollowUps > 0" class="flex items-center justify-between px-4 py-4 border-t">
+      <div class="text-sm text-gray-700 dark:text-gray-300">
+        {{ t('customers.table.showing_follow_ups', { 
           from: toArabicNumerals(((currentPage - 1) * itemsPerPage) + 1), 
-          to: toArabicNumerals(Math.min(currentPage * itemsPerPage, totalAppointments)),
-          total: toArabicNumerals(totalAppointments)
+          to: toArabicNumerals(Math.min(currentPage * itemsPerPage, totalFollowUps)),
+          total: toArabicNumerals(totalFollowUps)
         }) }}
       </div>
       <div :class="['flex items-center gap-2', isRTL ? 'flex-row-reverse' : 'flex-row']">
