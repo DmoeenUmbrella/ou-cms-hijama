@@ -53,6 +53,7 @@ export default {
         services: 'الخدمات',
         sessions: 'الجلسات',
         users: 'المستخدمون',
+        technicians: 'الفنيون',
     },
     footer: {
         promo: 'احصل على المزيد مع',

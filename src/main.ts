@@ -4,6 +4,7 @@ import { VueQueryPlugin, QueryClient } from "@tanstack/vue-query";
 
 // Styles (Tailwind 4 & Shadcn)
 import "./assets/styles/index.css";
+import "vue-sonner/style.css";
 
 // App Components
 import App from "./App.vue";
