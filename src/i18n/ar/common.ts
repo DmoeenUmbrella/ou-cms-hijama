@@ -109,5 +109,38 @@ export default {
       card: "بطاقة ائتمانية",
       transfer: "تحويل / دفع إلكتروني",
     },
-  },
+    aside: {
+        title: "القائمة الرئيسية",
+        dashboard: 'لوحة التحكم',
+        customers: 'العملاء',
+        appointments: 'المواعيد',
+        services: 'الخدمات',
+        sessions: 'الجلسات',
+        users: 'المستخدمون',
+        technicians: 'الفنيون',
+    },
+    footer: {
+        promo: 'احصل على المزيد مع',
+    },
+    validation: {
+        required: "هذا الحقل مطلوب",
+        numeric: "يجب أن تكون القيمة رقمًا",
+        text: "يجب أن تكون القيمة نصًا",
+        greater_than: "يجب أن يكون أكبر من {value}",
+        min_length: "يجب أن يحتوي على {count} أحرف على الأقل",
+        invalid: "قيمة غير صالحة",
+        invalid_date: "يجب أن تكون القيمة تاريخًا صالحًا",
+        invalid_time: "يجب أن تكون القيمة وقتًا صالحًا",
+        check_errors: "يرجى التحقق من النموذج بحثًا عن أخطاء.",
+        invalid_email: "أدخل عنوان بريد إلكتروني صالح",
+        password: {
+            missing_lower: "حرف صغير واحد",
+            missing_upper: "حرف كبير واحد",
+            missing_number: "رقم واحد",
+            missing_special: "رمز خاص واحد",
+            prefix: "يجب أن تحتوي كلمة المرور على "
+        }
+    },
+    companyName: "عيادة يوسف المطلعي الطبية"
+  }
 };

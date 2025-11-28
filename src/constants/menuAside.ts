@@ -38,4 +38,9 @@ export default [
     label: "aside.services",
     icon: Stethoscope,
   },
+  {
+    to: "/technicians",
+    label: "aside.technicians",
+    icon: Stethoscope,
+  },
 ];
