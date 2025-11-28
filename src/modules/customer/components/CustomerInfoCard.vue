@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { User, Phone, Calendar, DollarSign, Activity } from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import type { CustomerDetails } from '@/api/endpoints/customer/queries'
 import { format } from 'date-fns'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   customer: CustomerDetails
@@ -47,7 +50,7 @@ const formattedLastVisit = computed(() => {
       <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
         <div class="flex items-center gap-2">
           <Activity class="h-5 w-5 text-blue-600" />
-          <span class="text-sm font-medium text-muted-foreground">Total Sessions</span>
+          <span class="text-sm font-medium text-muted-foreground">{{ t('customers.total_sessions') }}</span>
         </div>
         <span class="text-2xl font-bold text-blue-600">{{ customer.totalSessions }}</span>
       </div>
@@ -56,7 +59,7 @@ const formattedLastVisit = computed(() => {
       <div class="flex items-center justify-between p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
         <div class="flex items-center gap-2">
           <DollarSign class="h-5 w-5 text-emerald-600" />
-          <span class="text-sm font-medium text-muted-foreground">Total Spent</span>
+          <span class="text-sm font-medium text-muted-foreground">{{ t('customers.total_spent') }}</span>
         </div>
         <span class="text-2xl font-bold text-emerald-600">{{ customer.totalSpent }} AED</span>
       </div>
@@ -65,7 +68,7 @@ const formattedLastVisit = computed(() => {
       <div class="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
         <div class="flex items-center gap-2">
           <Calendar class="h-5 w-5 text-purple-600" />
-          <span class="text-sm font-medium text-muted-foreground">Last Visit</span>
+          <span class="text-sm font-medium text-muted-foreground">{{ t('customers.last_visit') }}</span>
         </div>
         <span class="text-lg font-bold text-purple-600">{{ formattedLastVisit }}</span>
       </div>

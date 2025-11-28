@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { ArrowLeft, User } from 'lucide-vue-next'
-// import { Toast } from '@/lib/toast'
+import { toast } from 'vue-sonner'
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
 import CustomerInfoCard from '@/modules/customer/components/CustomerInfoCard.vue'
 import SessionHistoryTable from '@/modules/customer/components/SessionHistoryTable.vue'
@@ -10,20 +11,41 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCustomer } from '@/modules/customer/composables/customer.composable'
 
+const { t } = useI18n()
+
 const props = defineProps<{
   id: string
 }>()
 
 const router = useRouter()
-const { currentCustomer, isLoading, fetchCustomerDetails } = useCustomer()
+const { 
+  currentCustomer, 
+  appointments,
+  isLoading, 
+  isLoadingAppointments,
+  currentPage,
+  itemsPerPage,
+  fetchCustomerDetails,
+  fetchCustomerAppointments,
+  goToPage
+} = useCustomer()
 
 onMounted(async () => {
   try {
     await fetchCustomerDetails(props.id)
+    await fetchCustomerAppointments(props.id)
   } catch (error: any) {
-    // Toast.error(error.message || 'Failed to fetch customer details')
+    toast.error(error.message || 'Failed to fetch customer details')
   }
 })
+
+const handlePageChange = async (page: number) => {
+  try {
+    await goToPage(props.id, page)
+  } catch (error: any) {
+    toast.error(error.message || 'Failed to load appointments')
+  }
+}
 
 const goBack = () => {
   router.back()
@@ -41,7 +63,7 @@ const goBack = () => {
           </Button>
           <div class="flex items-center gap-2">
             <User class="h-8 w-8" />
-            <h2 class="text-3xl font-bold tracking-tight">Customer Details</h2>
+            <h2 class="text-3xl font-bold tracking-tight">{{ t('customers.details_title') }}</h2>
           </div>
         </div>
       </div>
@@ -63,13 +85,20 @@ const goBack = () => {
         <div class="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Session History</CardTitle>
+              <CardTitle>{{ t('customers.session_history') }}</CardTitle>
               <CardDescription>
-                Complete history of all sessions for this customer
+                {{ t('customers.session_history_description') }}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <SessionHistoryTable :sessions="currentCustomer.appointments" />
+              <SessionHistoryTable 
+                :sessions="appointments?.appointments || []"
+                :total-appointments="appointments?.totalAppointments || 0"
+                :current-page="currentPage"
+                :items-per-page="itemsPerPage"
+                :is-loading="isLoadingAppointments"
+                @page-change="handlePageChange"
+              />
             </CardContent>
           </Card>
         </div>
@@ -78,7 +107,7 @@ const goBack = () => {
       <!-- Error State -->
       <Card v-else>
         <CardContent class="flex justify-center items-center py-12">
-          <p class="text-muted-foreground">Customer not found</p>
+          <p class="text-muted-foreground">{{ t('customers.customer_not_found') }}</p>
         </CardContent>
       </Card>
     </div>

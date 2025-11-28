@@ -52,7 +52,8 @@ export default {
         appointments: 'Appointments',
         services: 'Services',
         sessions: 'Sessions',
-        users: 'Users'
+        users: 'Users',
+        technicians: 'Technicians',
     },
     footer: {
         promo: 'Get more with',
