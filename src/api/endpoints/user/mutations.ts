@@ -27,7 +27,7 @@ export interface UpdateUserPayload {
   id: string;
   firstName: string;
   lastName: string;
-  allowedScreens?: string[];
+  allowedScreens: string[];
   phoneNumber: string;
   profileUrl?: string;
 }
