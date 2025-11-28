@@ -20,6 +20,11 @@ export default {
         update: "Update",
         import: "Import"
     },
+    dialog: {
+        confirm_title: "Confirm Action",
+        cancel: "Cancel",
+        confirm: "Confirm"
+    },
     login: {
         login: 'Login',
         password: 'Password',

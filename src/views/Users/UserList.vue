@@ -1,100 +1,171 @@
-<script setup>
-import { ref, computed, onMounted } from 'vue'
-import { mdiAccountGroup, mdiPlusCircle } from '@mdi/js'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useUsersStore } from '@/stores/useUsersStore'
-
-import SectionMain from '@/components/ui/SectionMain.vue'
-import CardBox from '@/components/ui/CardBox.vue'
+import { UserCog, Plus } from 'lucide-vue-next'
+import { toast } from 'vue-sonner'
+import { useConfirmDialogStore } from '@/stores/confirmDialogStore'
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
-import SectionTitleLineWithButton from '@/components/ui/SectionTitleLineWithButton.vue'
-import BaseButton from '@/components/base/BaseButton.vue'
-import CardBoxModal from '@/components/ui/CardBoxModal.vue'
-import UsersTable from '@/components/users/UsersTable.vue'
-import UserForm from '@/components/users/UserForm.vue'
+import UsersTable from '@/modules/users/components/UsersTable.vue'
+import UsersFormDialog from '@/modules/users/components/UsersFormDialog.vue'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useUser } from '@/modules/users/composables/useUser'
+import type { CreateUserPayload, CreateAdminPayload, UpdateUserPayload } from '@/api/endpoints/user/mutations'
+import type { UserFormData } from '@/api/endpoints/user/types'
 
 const { t } = useI18n()
-const usersStore = useUsersStore()
+const dialog = useConfirmDialogStore()
 
-const isModalActive = ref(false)
-const isModalDangerActive = ref(false)
-const userToDelete = ref(null)
+const {
+  fetchUsers,
+  addUser,
+  addAdmin,
+  editUser,
+  removeUser
+} = useUser()
 
-const modalTitle = computed(() =>
-    usersStore.isUserFormEditing ? t('users.edit_title') : t('users.add_new_title')
-)
+// Dialog states
+const isFormDialogOpen = ref(false)
+const dialogMode = ref<'create' | 'edit'>('create')
+const selectedUser = ref<UserFormData | null>(null)
 
-const modalButtonLabel = computed(() =>
-    usersStore.isUserFormEditing ? t('button.update') : t('button.save')
-)
-
-const openCreateModal = () => {
-    usersStore.resetUserForm()
-    isModalActive.value = true
+// Handle edit user - Open dialog in edit mode
+const handleEditUser = (user: any) => {
+  dialogMode.value = 'edit'
+  selectedUser.value = {
+    id: user.id.toString(),
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    profileUrl: user.profileUrl || '',
+    isAdmin: user.type === 'admin'
+  }
+  isFormDialogOpen.value = true
 }
 
-const closeModal = () => {
-    usersStore.resetUserForm()
-    isModalActive.value = false
-}
-
-const handleUserSave = () => {
-    const success = usersStore.saveUser()
-    if (success) {
-        closeModal()
+// Handle delete user
+const handleDeleteUser = async (user: any) => {
+  const confirmed = await dialog.confirm(`${t('users.delete_user_note')} ${user.firstName} ${user.lastName}?`)
+  
+  if (confirmed) {
+    try {
+      await removeUser(user.id)
+      toast.success(t('users.deleted_successfully'))
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to delete user')
     }
+  }
 }
 
-const handleEditUser = (user) => {
-    usersStore.loadUserForEdit(user)
-    isModalActive.value = true
+// Handle add user - Open dialog in create mode
+const handleAddUser = () => {
+  dialogMode.value = 'create'
+  selectedUser.value = null
+  isFormDialogOpen.value = true
 }
 
-const handleDeleteConfirmation = (user) => {
-    userToDelete.value = user
-    isModalDangerActive.value = true
-}
-
-const handleConfirmDelete = () => {
-    if (userToDelete.value) {
-        usersStore.deleteUser(userToDelete.value.id)
-        isModalDangerActive.value = false
-        userToDelete.value = null
+// Handle form submission
+const handleFormSubmit = async (data: UserFormData) => {
+  try {
+    if (dialogMode.value === 'create') {
+      if (data.isAdmin) {
+        // Create admin user
+        const payload: CreateAdminPayload = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+          clinicName: data.clinicName || '',
+          profileUrl: data.profileUrl || '',
+          password: data.password || '',
+        }
+        
+        await addAdmin(payload)
+      } else {
+        // Create regular user
+        const payload: CreateUserPayload = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+          profileUrl: data.profileUrl || '',
+          password: data.password || '',
+        }
+        
+        await addUser(payload)
+      }
+      toast.success(t('users.created_successfully'))
+    } else {
+      const payload: UpdateUserPayload = {
+        id: data.id!,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phoneNumber: data.phoneNumber,
+        profileUrl: data.profileUrl || '',
+      }
+      
+      await editUser(payload)
+      toast.success(t('users.updated_successfully'))
     }
+    
+    // Close dialog after successful submission
+    isFormDialogOpen.value = false
+  } catch (error: any) {
+    toast.error(error.message || `Failed to ${dialogMode.value} user`)
+  }
 }
 
-onMounted(() => {
-    usersStore.fetchUsers()
+// Fetch users on mount
+onMounted(async () => {
+  try {
+    await fetchUsers()
+  } catch (error: any) {
+    toast.error(error.message || 'Failed to fetch users')
+  }
 })
 </script>
 
 <template>
-    <LayoutAuthenticated>
-        <!-- Create/Edit User Modal -->
-        <CardBoxModal v-model="isModalActive" :title="modalTitle" :buttonLabel="modalButtonLabel" :large="true"
-            has-cancel @confirm="handleUserSave" @cancel="closeModal" persist>
-            <UserForm />
-        </CardBoxModal>
+  <LayoutAuthenticated>
+    <!-- User Form Dialog (Add/Edit) -->
+    <UsersFormDialog 
+      v-model:open="isFormDialogOpen"
+      :user="selectedUser"
+      :mode="dialogMode"
+      @submit="handleFormSubmit"
+    />
 
-        <!-- Delete Confirmation -->
-        <CardBoxModal v-model="isModalDangerActive" :title="t('button.delete')" button="danger" has-cancel
-            @confirm="handleConfirmDelete">
-            <p>
-                {{ t('users.delete_user_note') }}
-                <span class="font-bold">{{ userToDelete?.firstName }} {{ userToDelete?.lastName }}</span>?
-            </p>
-        </CardBoxModal>
+    <div class="flex-1 space-y-4 p-4 md:p-8 pt-6">
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <UserCog class="h-8 w-8" />
+          <h2 class="text-3xl font-bold tracking-tight">{{ t('users.title') }}</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <Button @click="handleAddUser">
+            <Plus class="mr-2 h-4 w-4" />
+            {{ t('users.add_btn') }}
+          </Button>
+        </div>
+      </div>
 
-        <SectionMain>
-            <SectionTitleLineWithButton :icon="mdiAccountGroup" :title="t('users.title')" main>
-                <BaseButton :label="t('users.add_btn')" color="success" :icon="mdiPlusCircle"
-                    @click="openCreateModal" />
-            </SectionTitleLineWithButton>
-
-            <CardBox class="mb-6" has-table>
-                <UsersTable @edit="handleEditUser" @delete="handleDeleteConfirmation" />
-            </CardBox>
-
-        </SectionMain>
-    </LayoutAuthenticated>
+      <!-- Table Card -->
+      <Card>
+        <CardHeader>
+          <CardTitle>{{ t('users.user_list_title') }}</CardTitle>
+          <CardDescription>
+            {{ t('users.user_list_description') }}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <UsersTable 
+            @edit="handleEditUser" 
+            @delete="handleDeleteUser"
+          />
+        </CardContent>
+      </Card>
+    </div>
+  </LayoutAuthenticated>
 </template>
