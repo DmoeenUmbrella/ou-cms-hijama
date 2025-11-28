@@ -7,7 +7,8 @@ export default {
     total_spent: "Total Spent",
     last_visit: "Last Visit",
     session_history: "Session History",
-    session_history_description: "Complete history of all sessions for this customer",
+    session_history_description:
+      "Complete history of all sessions for this customer",
     no_session_history: "No session history available.",
     no_sessions_found: "No sessions found",
     loading_appointments: "Loading appointments...",
@@ -15,6 +16,11 @@ export default {
     add_new_customer_title: "Add New Customer",
     edit_customer_title: "Edit Customer",
     add_customer_btn: "Add Customer",
+
+    information: "Patient Information",
+    dob: "Date of Birth",
+    medical_notes: "Medical Notes",
+    medical_notes_placeholder: "Any relevant medical history...",
 
     table: {
       session: "Session",
@@ -37,6 +43,12 @@ export default {
         cupperName: "Cupper Name",
         notes: "Notes",
         reminder: "Reminder",
+        total_sessions: "Total sessions",
+        last_visit: "Last session",
+        created_on: "Created on",
+        active: "Active",
+        in_active: "Inctive",
+        status: "Status"
       },
       sampleModal: "Sample Modal",
       confirmModal: "Please confirm",

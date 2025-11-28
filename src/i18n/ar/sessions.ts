@@ -10,6 +10,33 @@ export default {
     new_title: "جلسة جديدة",
     create: "إنشاء الجلسة",
     edit_title: "تعديل الجلسة",
+    existing_patient_desc: "إنشاء جلسة علاجية جديدة لمريض موجود.",
+    follow_up_settings: "إعدادات المتابعة",
+    create_session_follow_up: "إنشاء جلسة ومتابعة",
+
+    create_success: "تم إنشاء الجلسة بنجاح",
+    create_failed: "حدث خطأ ما، يرجى المحاولة مرة أخرى",
+    no_clients: "لا يوجد مرضى متاحون لهذا المصطلح البحث",
+
+    follow_up_type: "نوع المتابعة",
+    priority_level: "مستوى الأولوية",
+    priority_high: "أولوية عالية",
+    priority_desc_high: "عاجل - الاتصال خلال 24 ساعة",
+    priority_medium: "أولوية متوسطة",
+    priority_desc_medium: "متابعة قياسية",
+    priority_low: "أولوية منخفضة",
+    priority_desc_low: "متابعة روتينية",
+
+    follow_up_notes: "ملاحظات المتابعة",
+    follow_up_notes_placeholder:
+      "سبب المتابعة، أسئلة محددة يجب طرحها، مخاوف المريض، تقدم العلاج...",
+    reminder_auto_title: "إنشاء تذكير تلقائي",
+    reminder_auto_desc:
+      "سيتم إنشاء تذكير تلقائيًا وسيتم تعيين الحالة على 'قيد الانتظار'. سيتابع النظام الإنجاز ويرسل الإشعارات بناءً على نوع المتابعة المحدد.",
+    schedule_follow_up: "جدول المتابعة",
+    follow_up_details: "تفاصيل المتابعة",
+
+    follow_up_success: "تم إنشاء المتابعة بنجاح",
 
     // Form Fields
     client_name: "اسم العميل",
@@ -25,6 +52,23 @@ export default {
     delete_session: "حذف الجلسة",
 
     cancel_session: "إلغاء الجلسة",
+
+    information: "معلومات الجلسة",
+    cups_count: "عدد الكؤوس",
+    amount: "المبلغ المدفوع (درهم)",
+    payment_method: "طريقة الدفع",
+    session_notes: "ملاحظات الجلسة",
+    session_notes_placeholder:
+      "تفاصيل حول الجلسة، ومناطق العلاج، والملاحظات...",
+
+    // Follow-Up Reminder fields
+    follow_up_date: "تاريخ المتابعة",
+    reminder_type: "نوع التذكير",
+
+    // Confirmation Step
+    success_title: "تم إنشاء الجلسة بنجاح!",
+    success_desc1: "تم تسجيل المريض وتسجيل جلسته الأولى.",
+    success_desc2: "تم جدولة تذكير بالمتابعة تلقائيًا.",
 
     // Table Headers
     table: {

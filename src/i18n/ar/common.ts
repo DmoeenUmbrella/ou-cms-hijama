@@ -1,24 +1,106 @@
 export default {
-    app: {
-        title: "نظام الحجامة",
-        customers: "العملاء",
-        appointments: "المواعيد",
-        promotions: "العروض",
-        logout: "تسجيل الخروج"
+  app: {
+    title: "نظام الحجامة",
+    customers: "العملاء",
+    appointments: "المواعيد",
+    promotions: "العروض",
+    logout: "تسجيل الخروج",
+  },
+  form: {
+    name: "الاسم",
+    phone: "الهاتف",
+    email: "البريد الإلكتروني",
+    description: "الوصف",
+  },
+  button: {
+    save: "حفظ",
+    cancel: "إلغاء",
+    delete: "حذف",
+    actions: "الإجراءات",
+    update: "تحديث",
+    import: "استيراد",
+  },
+  login: {
+    login: "تسجيل الدخول",
+    password: "كلمة المرور",
+    remember: "تذكرني",
+    pleaseEnterLogin: "الرجاء إدخال اسم المستخدم",
+    pleaseEnterPassword: "الرجاء إدخال كلمة المرور",
+    back: "عودة",
+  },
+  nav: {
+    searchPlaceholder: "ابحث (ctrl+k)",
+    toggleDark: "تبديل الوضع الداكن",
+    logout: "تسجيل الخروج",
+    sampleMenu: "قائمة تجريبية",
+    itemOne: "البند الأول",
+    itemTwo: "البند الثاني",
+    itemLast: "البند الأخير",
+    myProfile: "ملفي الشخصي",
+    settings: "الإعدادات",
+    messages: "الرسائل",
+    github: "GitHub",
+    reactVersion: "نسخة React",
+    translate: "اللغة",
+    arabic: "العربية",
+    english: "الإنجليزية",
+  },
+  aside: {
+    title: "القائمة الرئيسية",
+    dashboard: "لوحة التحكم",
+    customers: "العملاء",
+    appointments: "المواعيد",
+    services: "الخدمات",
+    sessions: "الجلسات",
+    users: "المستخدمون",
+  },
+  footer: {
+    promo: "احصل على المزيد مع",
+  },
+  validation: {
+    required: "هذا الحقل مطلوب",
+    numeric: "يجب أن تكون القيمة رقمًا",
+    text: "يجب أن تكون القيمة نصًا",
+    greater_than: "يجب أن يكون أكبر من {value}",
+    min_length: "يجب أن يحتوي على {count} أحرف على الأقل",
+    invalid: "قيمة غير صالحة",
+    invalid_date: "يجب أن تكون القيمة تاريخًا صالحًا",
+    invalid_time: "يجب أن تكون القيمة وقتًا صالحًا",
+    check_errors: "يرجى التحقق من النموذج بحثًا عن أخطاء.",
+    invalid_email: "أدخل عنوان بريد إلكتروني صالح",
+    password: {
+      missing_lower: "حرف صغير واحد",
+      missing_upper: "حرف كبير واحد",
+      missing_number: "رقم واحد",
+      missing_special: "رمز خاص واحد",
+      prefix: "يجب أن تحتوي كلمة المرور على ",
     },
-    form: {
-        name: "الاسم",
-        phone: "الهاتف",
-        email: "البريد الإلكتروني",
-        description: "الوصف",
-    },
+  },
+  companyName: "عيادة يوسف المطلعي الطبية",
+  common: {
+    welcome: "مرحباً",
+
+    // General Buttons used globally
     button: {
-        save: "حفظ",
-        cancel: "إلغاء",
-        delete: "حذف",
-        actions: "الإجراءات",
-        update: "تحديث",
-        import: "استيراد",
+      cancel: "إلغاء",
+      save: "حفظ",
+      update: "تحديث",
+      delete: "حذف",
+      apply: "تطبيق",
+      actions: "الإجراءات",
+      register: "تسجيل المريض",
+      finish_view_patient: "إنهاء وعرض سجل المريض",
+      review_complete: "التالي: مراجعة وإكمال",
+      next_session_details: "التالي: تفاصيل الجلسة",
+      back: "رجوع",
+      import: "استيراد",
+      view_details: "عرض السجل",
+    },
+
+    // Gender options
+    gender: {
+      male: "ذكر",
+      female: "أنثى",
     },
     dialog: {
         confirm_title: "تأكيد الإجراء",
@@ -33,22 +115,12 @@ export default {
         pleaseEnterPassword: 'الرجاء إدخال كلمة المرور',
         back: 'عودة',
     },
-    nav: {
-        searchPlaceholder: 'ابحث (ctrl+k)',
-        toggleDark: 'تبديل الوضع الداكن',
-        logout: 'تسجيل الخروج',
-        sampleMenu: 'قائمة تجريبية',
-        itemOne: 'البند الأول',
-        itemTwo: 'البند الثاني',
-        itemLast: 'البند الأخير',
-        myProfile: 'ملفي الشخصي',
-        settings: 'الإعدادات',
-        messages: 'الرسائل',
-        github: 'GitHub',
-        reactVersion: 'نسخة React',
-        translate: 'اللغة',
-        arabic: 'العربية',
-        english: 'الإنجليزية',
+
+    // Payment options
+    payment: {
+      cash: "نقداً",
+      card: "بطاقة ائتمانية",
+      transfer: "تحويل / دفع إلكتروني",
     },
     aside: {
         title: "القائمة الرئيسية",
@@ -83,4 +155,5 @@ export default {
         }
     },
     companyName: "عيادة يوسف المطلعي الطبية"
+  }
 };

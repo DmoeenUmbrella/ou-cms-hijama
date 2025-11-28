@@ -2,6 +2,8 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router"
 import { authRoutes } from "./routes/auth";
 import { dashboardRoutes } from "./routes/dashboard";
 import { authGuard } from "./guards";
+// import { customerRoutes } from "./routes/customers";
+import { appointmentRoutes } from "./routes/appointments";
 import { customerRoutes } from "./routes/customers";
 import { technicianRoutes } from "./routes/technicians";
 import { usersRoutes } from "./routes/users";
@@ -11,6 +13,8 @@ import { usersRoutes } from "./routes/users";
 export const routes: RouteRecordRaw[] = [
   ...authRoutes,
   ...dashboardRoutes,
+  // ...customerRoutes,
+  ...appointmentRoutes,
   ...customerRoutes,
   ...technicianRoutes,
   ...usersRoutes,
