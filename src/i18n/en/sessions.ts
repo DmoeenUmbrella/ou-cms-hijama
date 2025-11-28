@@ -34,7 +34,7 @@ export default {
 
     create_success: "The sesssion has been created successfully",
     create_failed: "Something went wrong, please try again",
-    no_clients: "No patients available for this search term", 
+    no_clients: "No patient available record found", 
 
     // Form Fields
     client_name: "Client Name",

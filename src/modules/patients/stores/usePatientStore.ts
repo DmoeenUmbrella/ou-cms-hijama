@@ -98,7 +98,7 @@ export const usePatientStore = defineStore("patients", () => {
       const response = await getPatientById(id);
       return response
     } catch (error) {
-      
+        toast.error(t("session.no_clients") || "Failed to fetch patients");
     }
   }
 
