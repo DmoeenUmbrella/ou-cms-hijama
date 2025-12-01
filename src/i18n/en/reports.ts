@@ -6,9 +6,15 @@ export default {
     dashboard_title: "Dashboard",
 
     kpi: {
-      total_appointments: "Total Appointments",
       active_clients: "Active Clients",
+      client_retention: "Client Retention Rate", // New
+      monthly_appointments: "Monthly Appointments", // New
+      monthly_revenue: "Monthly Revenue", // New
+
+      // Existing keys (kept to prevent errors if used elsewhere)
+      total_appointments: "Total Appointments",
       total_sessions: "Total Sessions",
+
       vs_last_month: "from last month",
     },
 

@@ -1,51 +1,58 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { TrendingUp, TrendingDown } from 'lucide-vue-next'
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-} from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge' // Ensure you have this component installed or create a placeholder
+import { ArrowUpRight, ArrowDownRight } from 'lucide-vue-next'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     title: string
     value: number | string
     change: number
-    period: string
-    icon?: any // Optional icon for the header
-}>()
-
+    period?: string
+    accentColor?: string // e.g., 'indigo', 'pink', 'rose', 'cyan'
+}>(), {
+    accentColor: 'indigo',
+    period: 'from last month'
+})
 
 const isPositive = computed(() => props.change >= 0)
-const formattedChange = computed(() => `${isPositive.value ? '+' : ''}${props.change}%`)
+const formattedChange = computed(() => `${Math.abs(props.change)}%`)
+
+// Map the color prop to Tailwind classes for the border
+const borderColorClass = computed(() => {
+    const colors: Record<string, string> = {
+        indigo: 'border-l-indigo-500',
+        cyan: 'border-l-cyan-500',
+        pink: 'border-l-pink-500',
+        rose: 'border-l-rose-500',
+        blue: 'border-l-blue-500',
+    }
+    return colors[props.accentColor] || 'border-l-indigo-500'
+})
 </script>
 
 <template>
-    <Card class="text-white">
-        <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardDescription class="text-white900 dark:text-lg">{{ title }}</CardDescription>
-            <!-- Optional: Badge in header like your example -->
-            <Badge :variant="isPositive ? 'default' : 'destructive'"
-                class="ml-auto bg-linear-to-r from-fuchsia-600 to-pink-600 shadow-xl dark:text-white">
-                <component :is="isPositive ? TrendingUp : TrendingDown" class="mr-1 h-3 w-3" />
-                {{ formattedChange }}
-            </Badge>
+    <Card class="border-l-4 shadow-sm bg-card" :class="borderColorClass">
+        <CardHeader class="px-6 py-0">
+            <CardTitle class="text-sm font-medium text-muted-foreground">
+                {{ title }}
+            </CardTitle>
         </CardHeader>
 
-        <CardContent>
-            <div class="text-3xl font-bold">{{ value }}</div>
-            <p class="text-sm bg-white rounded-2xl w-50 px-2 py-1 text-center text-muted-foreground mt-1 flex items-center dark:text-gray-900">
-                <!-- Dynamic trend message -->
-                <span v-if="isPositive" class="text-emerald-500 font-medium mr-1">
-                    {{ $t('appointment.trending_up') }}
+        <CardContent class="px-6 py-0">
+            <div class="text-3xl font-bold tracking-tight">
+                {{ value }}
+            </div>
+
+            <div class="mt-2 flex items-center text-xs">
+                <component :is="isPositive ? ArrowUpRight : ArrowDownRight" class="mr-1 h-4 w-4"
+                    :class="isPositive ? 'text-emerald-500' : 'text-rose-500'" />
+                <span class="font-medium" :class="isPositive ? 'text-emerald-500' : 'text-rose-500'">
+                    {{ formattedChange }}
                 </span>
-                <span v-else class="text-red-500 font-medium mr-1">
-                    {{ $t('appointment.trending_down') }}
+                <span class="ml-1 text-muted-foreground">
+                    {{ period }}
                 </span>
-                {{ period }}
-            </p>
+            </div>
         </CardContent>
     </Card>
 </template>

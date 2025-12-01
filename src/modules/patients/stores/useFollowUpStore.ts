@@ -76,7 +76,7 @@ export const useFollowupStore = defineStore("followUps", () => {
         // await fetchFollowUps();
       } else {
         toast.error(
-          i18n.global.t("session.create_failed") || "Failed to create follow-up"
+        i18n.global.t("session.create_failed") || "Failed to create follow-up"
         );
       }
       return response;
