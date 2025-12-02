@@ -54,6 +54,7 @@ export default {
     sessions: "الجلسات",
     users: "المستخدمون",
     technicians: "الفنيون",
+    followUps: "المتابعات",
   },
   footer: {
     promo: "احصل على المزيد مع",
@@ -80,6 +81,9 @@ export default {
   companyName: "عيادة يوسف المطلعي الطبية",
   common: {
     welcome: "مرحباً",
+    actions: "الإجراءات",
+    send_message: "إرسال رسالة",
+    feature_coming_soon: "هذه الميزة قيد التطوير",
 
     // General Buttons used globally
     button: {

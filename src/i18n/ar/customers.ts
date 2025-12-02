@@ -20,6 +20,12 @@ export default {
     loading_follow_ups: "جاري تحميل المتابعات...",
     upcoming_follow_ups: "المتابعات القادمة",
     past_follow_ups: "المتابعات السابقة",
+    all_follow_ups: "جميع المتابعات",
+    schedule_follow_up: "جدولة متابعة",
+    search_follow_ups: "البحث في المتابعات...",
+    total_follow_ups_card: "إجمالي المتابعات",
+    upcoming_card: "القادمة",
+    schedule_followup_description: "جدولة موعد متابعة لهذا العميل.",
     
     // Tabs
     tabs: {
@@ -47,6 +53,7 @@ export default {
       follow_up_id: "رقم المتابعة",
       appointment_id: "رقم الموعد",
       client_id: "رقم العميل",
+      client: "العميل",
       follow_up_date: "تاريخ المتابعة",
       columns: {
         name: "الاسم / Name",

@@ -1,6 +1,6 @@
 export default {
   auth: {
-    app_name: "عيادة الحجامة",
+    app_name: "عيادة يوسف المطيعل الطبية للحجامة",
     secure_portal: "بوابة الدخول الآمن",
     authenticating: "جاري المصادقة...",
     authenticating_desc:

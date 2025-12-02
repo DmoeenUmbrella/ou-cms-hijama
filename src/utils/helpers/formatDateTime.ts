@@ -24,6 +24,8 @@ export const isoToReadableDate = (
   isoDate: string,
   options?: Intl.DateTimeFormatOptions
 ) => {
+  console.log('isoToReadableDate called with:', isoDate, options);
+  
   if (!isoDate) return "";
   const date = new Date(isoDate);
 

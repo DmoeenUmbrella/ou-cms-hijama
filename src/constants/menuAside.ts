@@ -9,15 +9,15 @@ import {
 
 export default [
   {
-    to: "/",
+    to: "/dashboard",
     label: "aside.dashboard",
     icon: LayoutDashboard,
   },
-  {
-    to: "/customers",
-    label: "aside.customers",
-    icon: Users,
-  },
+  // {
+  //   to: "/customers",
+  //   label: "aside.customers",
+  //   icon: Users,
+  // },
   {
     to: "/appointments",
     label: "aside.appointments",
@@ -27,6 +27,11 @@ export default [
     to: "/sessions",
     label: "aside.sessions",
     icon: ClipboardList,
+  },
+  {
+    to: "/follow-ups",
+    label: "aside.followUps",
+    icon: Calendar,
   },
   {
     to: "/users",
