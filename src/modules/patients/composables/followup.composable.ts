@@ -1,107 +1,163 @@
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, watch } from "vue";
+import { useFollowupStore } from "../stores/useFollowUpStore";
 import { useI18n } from "vue-i18n";
-import { usePatientStore } from "../stores/usePatientStore";
-import { useServicesStore } from "@/stores/useServicesStore";
-import { validateForm } from "@/utils/helpers/validate";
-import type {
-  CreateFollowUpPayload,
-  DropdownOption,
-} from "@/types/appointment";
+import type { Patient } from "@/types/appointment";
+import dateToISOStringFormat from "@/utils/helpers/formatDateTime";
 
-// Validation Schema for Follow-up (scheduling)
-const validationSchema = {
-  serviceId: { type: "number", validate: "> 0" },
-  date: { type: "string", validate: "valid date" },
-  time: { type: "string", validate: "valid time" },
-  priorityLevel: { type: "string", validate: "required" },
-} as const;
-
-export function useFollowUpForm(clientId: string | null) {
+export function useFollowUpView() {
+  const followupStore = useFollowupStore();
   const { t } = useI18n();
-  const appointmentsStore = usePatientStore();
-  const servicesStore = useServicesStore();
 
-  // BIND to a local form state specific for Follow-up creation
-  const form = ref({
-    clientId: clientId, // Required patient ID
-    serviceId: null as string | null,
-    date: new Date().toISOString().slice(0, 10),
-    time: new Date().toTimeString().slice(0, 5),
-    notes: "" as string,
-    priorityLevel: "Medium" as "High" | "Medium" | "Low",
-    followUpType: "SMS" as string,
+  // --- UI State ---
+  const isModalActive = ref(false);
+  const isDeleteModalActive = ref(false);
+  const selectedFollowUp = ref<Patient | null>(null);
+  const followUpToDelete = ref(null as any);
+  const isEditing = ref(false);
+  const currentAction = ref<"create-followup" | "edit-followup" | null>(null);
+
+  // --- Computed ---
+  const modalTitle = computed(() => {
+    return isEditing.value
+      ? t("followup.edit_label")
+      : t("session.schedule_follow_up");
   });
 
-  const errors = ref<Record<string, string>>({});
+  // Store data
+  const upcomingFollowUps = computed(() => followupStore.upcomingFollowUps);
+  const pastFollowUps = computed(() => followupStore.pastFollowUps);
+  const allFollowUps = computed(() => followupStore.allFollowUps);
+  const upcomingTotal = computed(() => followupStore.upcomingTotal);
+  const pastTotal = computed(() => followupStore.pastTotal);
+  const allTotal = computed(() => followupStore.allTotal);
+  const isLoading = computed(() => followupStore.isLoading);
 
-  // Data source for dropdowns
-  const serviceOptions = computed<DropdownOption[]>(() =>
-    servicesStore.services.map((s) => ({ id: s.id as number, label: s.name }))
-  );
+  // --- Handlers ---
+  const openFollowUpModal = () => {
+    followupStore.resetFormFollowUp();
+    isModalActive.value = true;
+  };
 
-  const followUpTypeOptions = ref<DropdownOption[]>([
-    { id: "SMS", label: "SMS" },
-    { id: "Email", label: "Email" },
-    { id: "Call", label: "Call" },
-  ]);
+  const handleCreateFollowUp = async (patient: Patient) => {
+    isEditing.value = false;
+    currentAction.value = "create-followup";
+    selectedFollowUp.value = patient;
+    openFollowUpModal();
+  };
 
-  const priorityOptions = ref([
-    { id: "High", label: t("session.priority_high") || "High Priority" },
-    { id: "Medium", label: t("session.priority_medium") || "Medium Priority" },
-    { id: "Low", label: t("session.priority_low") || "Low Priority" },
-  ]);
+  const handleEditFollowUp = (followUp: any) => {
+    isEditing.value = true;
+    currentAction.value = "edit-followup";
+    selectedFollowUp.value = followUp;
+    openFollowUpModal();
+  };
 
-  const handleSubmit = async (): Promise<boolean> => {
-    // 1. Run Validation
-    const result = validateForm(
-      form.value as unknown as Record<string, any>,
-      validationSchema,
-      t
-    );
+  const handleDeleteConfirmation = (followUp: any) => {
+    followUpToDelete.value = followUp;
+    isDeleteModalActive.value = true;
+  };
 
-    if (!result.isValid) {
-      errors.value = result.errors;
-      return false;
+  const handleDeleteFollowUp = async () => {
+    if (followUpToDelete.value) {
+      await followupStore.deleteFollowUp(followUpToDelete.value.id);
+      isDeleteModalActive.value = false;
     }
+  };
 
-    errors.value = {};
+  const handleFormSubmit = async (payload: any) => {
+    const action = currentAction.value;
 
-    // 2. Prepare Payload
-    const followUpPayload: CreateFollowUpPayload = {
-      clientId: form.value.clientId!,
-      serviceId: form.value.serviceId!,
-      date: new Date(`${form.value.date}T${form.value.time}:00`).toISOString(),
-      time: new Date(`${form.value.date}T${form.value.time}:00`).toISOString(),
-      notes: form.value.notes,
-      status: "scheduled",
+    // Helper to safely transform date fields
+    const formatDateField = (field?: string | Date) => {
+      if (!field) return null;
+      if (field instanceof Date) {
+        return field.toISOString();
+      }
+      return dateToISOStringFormat(field);
     };
 
-    // 3. Call Store Action
-    const success = await appointmentsStore.createFollowUp(followUpPayload);
+    try {
+      let response;
 
-    return success;
-  };
+      switch (action) {
+        case "create-followup":
+          response = await followupStore.createFollowUp({
+            ...payload,
+            date: formatDateField(payload.date),
+          });
+          break;
 
-  // Helper to handle select update and convert string back to number/string
-  const handleSelectUpdate = (key: keyof typeof form.value, value: string) => {
-    if (key === "serviceId") {
-      (form.value[key] as number) = parseInt(value);
-    } else {
-      (form.value[key] as string) = value;
+        case "edit-followup":
+          response = await followupStore.updateFollowUp({
+            ...payload,
+            date: formatDateField(payload.date),
+          });
+          break;
+
+        default:
+          throw new Error(`Unknown form action: ${action}`);
+      }
+
+      if (response && typeof response === 'object' && 'isSuccess' in response && response.isSuccess) {
+        handleFormSubmitSuccess();
+      } else if (response === true) {
+        handleFormSubmitSuccess();
+      } else {
+        console.warn("Unexpected API response:", response);
+      }
+    } catch (err) {
+      console.error("Submit error:", err);
     }
   };
 
-  onMounted(() => {
-    // servicesStore.fetchServices();
-  });
+  const handleFormSubmitSuccess = () => {
+    isModalActive.value = false;
+    selectedFollowUp.value = null;
+  };
+
+  const closeModal = () => {
+    followupStore.resetFormFollowUp();
+    isModalActive.value = false;
+    selectedFollowUp.value = null;
+  };
+
+  watch(
+    () => isModalActive.value,
+    (newVal) => {
+      if (!newVal) {
+        selectedFollowUp.value = null;
+      }
+    },
+    { deep: true }
+  );
 
   return {
-    form,
-    errors,
-    serviceOptions,
-    followUpTypeOptions,
-    priorityOptions,
-    handleSubmit,
-    handleSelectUpdate,
+    // UI State
+    isModalActive,
+    isDeleteModalActive,
+    selectedFollowUp,
+    followUpToDelete,
+
+    // Computed
+    isEditing,
+    modalTitle,
+    currentAction,
+    upcomingFollowUps,
+    pastFollowUps,
+    allFollowUps,
+    upcomingTotal,
+    pastTotal,
+    allTotal,
+    isLoading,
+
+    // Handlers
+    openFollowUpModal,
+    handleCreateFollowUp,
+    handleEditFollowUp,
+    handleDeleteConfirmation,
+    handleDeleteFollowUp,
+    handleFormSubmitSuccess,
+    handleFormSubmit,
+    closeModal,
   };
 }

@@ -1,6 +1,6 @@
 export default {
   auth: {
-    app_name: "Hijama Clinic",
+    app_name: "Yousaf  Almatiael Hijama Medical Clinic",
     secure_portal: "Secure Access Portal",
     authenticating: "Authenticating...",
     authenticating_desc:

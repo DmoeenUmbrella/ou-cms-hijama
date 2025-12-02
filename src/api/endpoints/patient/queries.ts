@@ -92,3 +92,32 @@ export const getFollowUpById = async (id: string) => {
   );
   return response.data.data;
 };
+
+// Get follow-ups by status (upcoming, past, or all)
+import type { FollowUpStatusResponse, CalendarResponse } from "./interfaces";
+
+export const getFollowUpsByStatus = async (
+  params: FetchParams & { status?: 'upcoming' | 'past' } = { page: 1, count: 20 }
+) => {
+  const response = await apiClient.get<FollowUpStatusResponse>("/follow-up/status", {
+    params: {
+      page: params.page,
+      count: params.count,
+      status: params.status, // undefined will fetch all
+    },
+  });
+
+  return response.data;
+};
+
+// Get monthly calendar with follow-ups
+export const getMonthlyCalendar = async (month: string, year: number) => {
+  const response = await apiClient.get<CalendarResponse>("/follow-up/monthly-calendar", {
+    params: {
+      month,
+      year,
+    },
+  });
+
+  return response.data;
+};
