@@ -8,6 +8,7 @@ import { customerRoutes } from "./routes/customers";
 import { technicianRoutes } from "./routes/technicians";
 import { usersRoutes } from "./routes/users";
 import { followupRoutes } from "./routes/followups";
+import { reportRoutes } from "./routes/reports";
 // import { appointmentRoutes } from "./routes/appointments";
 // import { adminRoutes } from "./routes/admin";
 
@@ -20,6 +21,7 @@ export const routes: RouteRecordRaw[] = [
   ...technicianRoutes,
   ...usersRoutes,
   ...followupRoutes,
+  ...reportRoutes,
   // ...appointmentRoutes,
   // ...adminRoutes,
   // 404 Fallback

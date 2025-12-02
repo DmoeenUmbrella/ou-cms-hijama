@@ -1,3 +1,5 @@
+import reports from "./reports";
+
 export default {
   app: {
     title: "Cupping Therapy System",
@@ -48,6 +50,7 @@ export default {
   aside: {
     title: "Main Menu",
     dashboard: "Dashboard",
+    reports:"Reports",
     customers: "Customers",
     appointments: "Appointments",
     services: "Services",
