@@ -48,11 +48,18 @@ export default {
       active_patients: "Active Patients",
       returning_patients: "Returning Patients",
       description: "Overview of patient registrations and activity",
+      activity_title: "Patient Activity",
+      client_id: "Client ID",
+      client_name: "Client Name",
+      last_session: "Last Session",
+      total_sessions: "Sessions",
+      total_followups: "Follow-ups",
     },
 
     session: {
       title: "Session Statistics",
       total_sessions: "Total Sessions",
+      total_revenue: "Total Revenue",
       completed_sessions: "Completed Sessions",
       cancelled_sessions: "Cancelled Sessions",
       avg_duration: "Avg. Duration",
@@ -62,6 +69,7 @@ export default {
     followup: {
       title: "Follow-up Statistics",
       total_followups: "Total Follow-ups",
+      response_rate: "Response Rate",
       pending_followups: "Pending Follow-ups",
       completed_followups: "Completed Follow-ups",
       overdue_followups: "Overdue Follow-ups",

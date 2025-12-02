@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, provide } from 'vue'
 import { FileSpreadsheet, MessageSquare } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
@@ -26,6 +27,10 @@ const {
   handleApplyFilter,
 } = useReport()
 
+// Filter version to trigger refetch in child components
+const filterVersion = ref(0)
+provide('reportFilterVersion', filterVersion)
+
 const handleExportAllReports = () => {
   toast.info(t('common.feature_coming_soon'))
 }
@@ -35,9 +40,10 @@ const handleSendSMS = () => {
 }
 
 const onApplyFilter = () => {
-  const dateRange = handleApplyFilter()
+  handleApplyFilter()
+  // Increment version to trigger refetch in all section components
+  filterVersion.value++
   toast.success(t('reports.filters.filter_applied'))
-  console.log('Filter applied:', dateRange)
 }
 </script>
 

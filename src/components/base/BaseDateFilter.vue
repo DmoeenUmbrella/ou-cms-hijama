@@ -193,7 +193,7 @@ const handleApply = () => {
           <PopoverTrigger as-child>
             <Button 
               variant="outline" 
-              class="w-[180px] justify-start text-start font-normal"
+              class="w-[220px] justify-start text-start font-normal"
               :class="{ 'text-muted-foreground': !internalStartDate }"
             >
               <CalendarIcon class="me-2 h-4 w-4" />
@@ -215,7 +215,7 @@ const handleApply = () => {
           <PopoverTrigger as-child>
             <Button 
               variant="outline" 
-              class="w-[180px] justify-start text-start font-normal"
+              class="w-[220px] justify-start text-start font-normal"
               :class="{ 'text-muted-foreground': !internalEndDate }"
             >
               <CalendarIcon class="me-2 h-4 w-4" />

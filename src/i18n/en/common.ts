@@ -162,5 +162,12 @@ export default {
       card: "Credit Card",
       transfer: "Mobile Payment",
     },
+
+    // Pagination
+    page: "Page",
+    previous: "Previous",
+    next: "Next",
+    no_data: "No data available",
+    error: "An error occurred",
   },
 };

@@ -115,23 +115,23 @@ onMounted(() => {
 
       <!-- Cards -->
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <DashboardCard :title="t('reports.kpi.active_clients')" :value="reportsStore.stats.activeClients"
-          :change="reportsStore.stats.clientStatus" :period="t('reports.kpi.vs_last_month')" accent-color="indigo" />
+        <DashboardCard :title="t('reports.kpi.active_clients')" :value="reportsStore?.stats?.activeClients"
+          :change="reportsStore?.stats?.clientStatus" :period="t('reports.kpi.vs_last_month')" accent-color="indigo" />
 
-        <DashboardCard :title="t('reports.kpi.client_retention')" :value="reportsStore.stats.retentionRate + '%'"
-          :change="reportsStore.stats.retentionStatus" :period="t('reports.kpi.vs_last_month')" accent-color="cyan" />
+        <DashboardCard :title="t('reports.kpi.client_retention')" :value="reportsStore?.stats?.retentionRate + '%'"
+          :change="reportsStore?.stats?.retentionStatus" :period="t('reports.kpi.vs_last_month')" accent-color="cyan" />
 
-        <DashboardCard :title="t('reports.kpi.monthly_appointments')" :value="reportsStore.stats.totalAppointment"
-          :change="reportsStore.stats.appointmentStatus" :period="t('reports.kpi.vs_last_month')" accent-color="pink" />
+        <DashboardCard :title="t('reports.kpi.monthly_appointments')" :value="reportsStore?.stats?.totalAppointment"
+          :change="reportsStore?.stats?.appointmentStatus" :period="t('reports.kpi.vs_last_month')" accent-color="pink" />
 
         <DashboardCard :title="t('reports.kpi.monthly_revenue')"
-          :value="'$' + reportsStore.stats.monthlyRevenue.toLocaleString()" :change="reportsStore.stats.revenueStatus"
+          :value="'$' + reportsStore?.stats?.monthlyRevenue.toLocaleString()" :change="reportsStore?.stats?.revenueStatus"
           :period="t('reports.kpi.vs_last_month')" accent-color="rose" />
       </div>
 
       <!-- Charts -->
       <div class="grid gap-4 md:grid-cols-1 lg:grid-cols-3 mt-4">
-        <AppointmentVolumeChart :data="reportsStore.appointmentVolume" :summary="reportsStore.volumeSummary" />
+        <AppointmentVolumeChart :data="reportsStore.appointmentVolume" :summary="reportsStore?.volumeSummary" />
         <ClientJourney :data="reportsStore.clientJourney" />
       </div>
 
