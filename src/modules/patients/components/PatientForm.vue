@@ -171,7 +171,8 @@ const onSubmit = () => {
                     <PopoverTrigger as-child>
                         <Button variant="outline" class="w-full justify-start text-start font-normal"
                             :class="{ 'text-muted-foreground': !form.reminder }">
-                            <span>{{ form.reminder ? format(new Date(form.reminder), 'PPP') : 'Select Date' }}</span>
+                            <span>{{ form.reminder ? format(dateValueToJSDate(form.reminder), 'PPP') : 'Select Date'
+                                }}</span>
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent class="w-auto p-0">
@@ -184,7 +185,20 @@ const onSubmit = () => {
         <!-- CREATE SESSION -->
         <div v-if="props.currentAction === 'create-session'" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="grid gap-2">
-                <Label for="date">{{ t('patient.session.date') || 'Date' }}
+                <Label for="date">{{ t('patient.session.date') || 'Date' }}</Label>
+                <Popover>
+                    <PopoverTrigger as-child>
+                        <Button variant="outline" class="w-full justify-start text-start font-normal"
+                            :class="{ 'text-muted-foreground': !form.date }">
+                            <span>{{ form.date ? format(dateValueToJSDate(form.date), 'PPP') : 'Select Date'
+                                }}</span>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent class="w-auto p-0">
+                        <Calendar v-model="form.date" mode="single" initial-focus :minValue="currentDate" />
+                    </PopoverContent>
+                </Popover>
+                <!-- <Label for="date">{{ t('patient.session.date') || 'Date' }}
                     <span class="text-destructive">*</span>
                 </Label>
                 <Popover>
@@ -197,7 +211,7 @@ const onSubmit = () => {
                     <PopoverContent class="w-auto p-0">
                         <Calendar v-model="form.date" mode="single" initial-focus :minValue="currentDate" />
                     </PopoverContent>
-                </Popover>
+                </Popover> -->
                 <span v-if="errors.date" class="text-xs text-destructive">{{ errors.date }}</span>
             </div>
 
@@ -247,12 +261,13 @@ const onSubmit = () => {
             </div>
 
             <div class="grid gap-2 col-span-2">
-                <Label for="reminder">{{ t('patient.session.reminder') || 'Reminder' }}</Label>
+                <Label for="date">{{ t('patient.session.reminder') || 'Date' }}</Label>
                 <Popover>
                     <PopoverTrigger as-child>
                         <Button variant="outline" class="w-full justify-start text-start font-normal"
                             :class="{ 'text-muted-foreground': !form.reminder }">
-                            <span>{{ form.reminder ? format(new Date(form.reminder), 'PPP') : 'Select Date' }}</span>
+                            <span>{{ form.reminder ? format(dateValueToJSDate(form.reminder), 'PPP') : 'Select Date'
+                            }}</span>
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent class="w-auto p-0">
