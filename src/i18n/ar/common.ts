@@ -48,6 +48,7 @@ export default {
   aside: {
     title: "القائمة الرئيسية",
     dashboard: "لوحة التحكم",
+    reports:"التقارير",
     customers: "العملاء",
     appointments: "المواعيد",
     services: "الخدمات",

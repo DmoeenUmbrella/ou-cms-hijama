@@ -5,6 +5,7 @@ import {
   ClipboardList,
   UserCog,
   Stethoscope,
+  BarChart,
 } from "lucide-vue-next";
 
 export default [
@@ -13,11 +14,18 @@ export default [
     label: "aside.dashboard",
     icon: LayoutDashboard,
   },
+
+  {
+    to: "/reports",
+    label: "aside.reports",
+    icon: BarChart,
+  },
   // {
   //   to: "/customers",
   //   label: "aside.customers",
   //   icon: Users,
   // },
+
   {
     to: "/appointments",
     label: "aside.appointments",
