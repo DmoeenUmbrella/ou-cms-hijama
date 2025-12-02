@@ -21,6 +21,12 @@ export default {
     loading_follow_ups: "Loading follow-ups...",
     upcoming_follow_ups: "Upcoming Follow-Ups",
     past_follow_ups: "Past Follow-Ups",
+    all_follow_ups: "All Follow-Ups",
+    schedule_follow_up: "Schedule Follow-Up",
+    search_follow_ups: "Search follow-ups...",
+    total_follow_ups_card: "Total Follow-Ups",
+    upcoming_card: "Upcoming",
+    schedule_followup_description: "Schedule a follow-up appointment for this customer.",
     
     // Tabs
     tabs: {
@@ -53,6 +59,7 @@ export default {
       follow_up_id: "Follow-Up ID",
       appointment_id: "Appointment ID",
       client_id: "Client ID",
+      client: "Client",
       follow_up_date: "Follow-Up Date",
       columns: {
         name: "Name",

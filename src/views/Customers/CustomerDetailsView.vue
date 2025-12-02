@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref,computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ArrowLeft, User } from 'lucide-vue-next'
@@ -7,11 +7,12 @@ import { toast } from 'vue-sonner'
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
 import CustomerInfoCard from '@/modules/customer/components/CustomerInfoCard.vue'
 import SessionHistoryTable from '@/modules/customer/components/SessionHistoryTable.vue'
-import FollowUpTable from '@/modules/customer/components/FollowUpTable.vue'
+import FollowUpSection from '@/components/followup/followUpSection.vue'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useCustomer } from '@/modules/customer/composables/customer.composable'
+import type { Patient } from '@/types/appointment'
 
 const { t } = useI18n()
 
@@ -59,6 +60,35 @@ const handlePageChange = async (page: number) => {
 const goBack = () => {
   router.back()
 }
+
+const handleFollowUpPageChange = (type: 'upcoming' | 'past' | 'all', page: number) => {
+  // TODO: Implement pagination for follow-ups
+  console.log('Page change:', type, page)
+}
+
+const handleRefreshFollowUps = async () => {
+  try {
+    await fetchCustomerFollowUps(props.id)
+  } catch (error: any) {
+    toast.error(error.message || 'Failed to refresh follow-ups')
+  }
+}
+
+const customerAsPatient = computed(() => {
+  if (!currentCustomer.value) return null
+  
+  return {
+    id: currentCustomer.value.id.toString(),
+    name: currentCustomer.value.name,
+    phone: currentCustomer.value.phoneNumber,
+    phoneNumber: currentCustomer.value.phoneNumber,
+    gender: currentCustomer.value.gender,
+    dateOfBirth: currentCustomer.value.dateOfBirth,
+    notes: currentCustomer.value.notes,
+    totalSessions: currentCustomer.value.totalSessions?.toString() || '0',
+    lastSessionDate: currentCustomer.value.lastAppointmentDate || null,
+  } as unknown as Patient
+})
 </script>
 
 <template>
@@ -83,7 +113,7 @@ const goBack = () => {
       </div>
 
       <!-- Customer Details -->
-      <div v-else-if="currentCustomer" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div v-else-if="currentCustomer" class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         
         <!-- Left Column - Customer Info Card -->
         <div class="lg:col-span-1">
@@ -91,16 +121,8 @@ const goBack = () => {
         </div>
 
         <!-- Right Column - Tabs with Session History and Follow-Ups -->
-        <div class="lg:col-span-2">
+        <div class="lg:col-span-3">
           <Card>
-            <CardHeader>
-              <CardTitle>
-                {{ activeTab === 'sessions' ? t('customers.session_history') : t('customers.follow_ups') }}
-              </CardTitle>
-              <CardDescription>
-                {{ activeTab === 'sessions' ? t('customers.session_history_description') : t('customers.follow_ups_description') }}
-              </CardDescription>
-            </CardHeader>
             <CardContent>
               <Tabs v-model="activeTab" default-value="sessions">
                 <TabsList class="grid w-full grid-cols-2">
@@ -113,6 +135,15 @@ const goBack = () => {
                 </TabsList>
                 
                 <TabsContent value="sessions" class="mt-4">
+                  <div class="space-y-6">
+    <!-- Header with Title and Add Button -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight">{{ t('customers.session_history') }}</h2>
+        <p class="text-sm text-muted-foreground">{{ t('customers.session_history_description') }}</p>
+      </div>
+    </div>
+                  </div>
                   <SessionHistoryTable 
                     :sessions="appointments?.appointments || []"
                     :total-appointments="appointments?.totalAppointments || 0"
@@ -124,35 +155,17 @@ const goBack = () => {
                 </TabsContent>
                 
                 <TabsContent value="follow-ups" class="mt-4">
-                  <div class="space-y-4">
-                    <!-- Upcoming Follow-Ups -->
-                    <div>
-                      <h3 class="text-lg font-semibold mb-2">{{ t('customers.upcoming_follow_ups') }}</h3>
-                      <FollowUpTable 
-                        :follow-ups="followUps?.upcoming.data || []"
-                        :total-follow-ups="followUps?.upcoming.totalCount || 0"
-                        :current-page="1"
-                        :items-per-page="10"
-                        :is-loading="isLoadingFollowUps"
-                        type="upcoming"
-                        @page-change="() => {}"
-                      />
-                    </div>
-                    
-                    <!-- Past Follow-Ups -->
-                    <div>
-                      <h3 class="text-lg font-semibold mb-2">{{ t('customers.past_follow_ups') }}</h3>
-                      <FollowUpTable 
-                        :follow-ups="followUps?.past.data || []"
-                        :total-follow-ups="followUps?.past.totalCount || 0"
-                        :current-page="1"
-                        :items-per-page="10"
-                        :is-loading="isLoadingFollowUps"
-                        type="past"
-                        @page-change="() => {}"
-                      />
-                    </div>
-                  </div>
+                  <FollowUpSection 
+                    :upcoming-follow-ups="followUps?.upcoming.data || []"
+                    :past-follow-ups="followUps?.past.data || []"
+                    :upcoming-total="followUps?.upcoming.totalCount || 0"
+                    :past-total="followUps?.past.totalCount || 0"
+                    :is-loading="isLoadingFollowUps"
+                    :current-customer="customerAsPatient"
+                    :is-client-view="true"
+                    @page-change="handleFollowUpPageChange"
+                    @refresh-followups="handleRefreshFollowUps"
+                  />
                 </TabsContent>
               </Tabs>
             </CardContent>

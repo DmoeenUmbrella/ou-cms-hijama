@@ -25,6 +25,18 @@ export function usePatientForm(props: {
     return `${hours}:${minutes}`;
   }
 
+  const dateValueToJSDate = (date: any) => {
+    if (typeof date === "string") {
+      return new Date(date); // ISO-safe expected: "2025-12-02"
+    }
+
+    if (!date?.year || !date?.month || !date?.day) {
+      return date; // or throw error
+    }
+
+    return new Date(date.year, date.month - 1, date.day);
+  };
+
   const form = reactive({
     id: "",
     // Patient
@@ -173,5 +185,6 @@ export function usePatientForm(props: {
     getInitials,
     technicians,
     currentDate,
+    dateValueToJSDate,
   };
 }

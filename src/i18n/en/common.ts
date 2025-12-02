@@ -54,6 +54,7 @@ export default {
     sessions: "Sessions",
     users: "Users",
     technicians: "Cuppers",
+    followUps: "Follow Ups",
   },
   footer: {
     promo: "Get more with",
@@ -82,6 +83,9 @@ export default {
   companyName: "Yousaf Almatlaei Hijama Medical Clinic",
   common: {
     welcome: "Welcome",
+    actions: "Actions",
+    send_message: "Send Message",
+    feature_coming_soon: "This feature is coming soon",
 
     // General Buttons used globally
     button: {
