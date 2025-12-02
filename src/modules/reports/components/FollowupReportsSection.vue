@@ -1,41 +1,15 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { ClipboardList, Clock, CheckCircle2, AlertTriangle } from 'lucide-vue-next'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useFollowupReport } from '../composables/FollowupReport.composable'
+import DashboardCard from '@/components/dashboard/DashboardCard.vue'
+import { Skeleton } from '@/components/ui/skeleton'
 
-const { t } = useI18n()
-
-// Sample data for demo
-const stats = [
-  {
-    title: 'reports.followup.total_followups',
-    value: '324',
-    icon: ClipboardList,
-    change: '+22%',
-    changeType: 'positive' as const,
-  },
-  {
-    title: 'reports.followup.pending_followups',
-    value: '89',
-    icon: Clock,
-    change: '-8%',
-    changeType: 'positive' as const,
-  },
-  {
-    title: 'reports.followup.completed_followups',
-    value: '198',
-    icon: CheckCircle2,
-    change: '+25%',
-    changeType: 'positive' as const,
-  },
-  {
-    title: 'reports.followup.overdue_followups',
-    value: '12',
-    icon: AlertTriangle,
-    change: '-15%',
-    changeType: 'positive' as const,
-  },
-]
+const {
+  t,
+  isLoading,
+  error,
+  totalFollowUps,
+  responseRate,
+} = useFollowupReport()
 </script>
 
 <template>
@@ -46,25 +20,28 @@ const stats = [
       <p class="text-sm text-muted-foreground">{{ t('reports.followup.description') }}</p>
     </div>
 
+    <!-- Error State -->
+    <div v-if="error" class="p-4 bg-destructive/10 text-destructive rounded-lg">
+      {{ error }}
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="isLoading" class="grid gap-4 md:grid-cols-2">
+      <Skeleton v-for="i in 2" :key="i" class="h-[120px] rounded-lg" />
+    </div>
+
     <!-- Stats Cards Grid -->
-    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Card v-for="stat in stats" :key="stat.title">
-        <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle class="text-sm font-medium">
-            {{ t(stat.title) }}
-          </CardTitle>
-          <component :is="stat.icon" class="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div class="text-2xl font-bold">{{ stat.value }}</div>
-          <p class="text-xs text-muted-foreground">
-            <span :class="stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'">
-              {{ stat.change }}
-            </span>
-            {{ t('reports.kpi.vs_last_month') }}
-          </p>
-        </CardContent>
-      </Card>
+    <div v-else class="grid gap-4 md:grid-cols-2">
+      <DashboardCard 
+        :title="t('reports.followup.total_followups')" 
+        :value="totalFollowUps" 
+        accentColor="indigo" 
+      />
+      <DashboardCard 
+        :title="t('reports.followup.response_rate')" 
+        :value="`${responseRate}%`" 
+        accentColor="cyan" 
+      />
     </div>
   </div>
 </template>

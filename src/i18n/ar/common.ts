@@ -128,6 +128,14 @@ export default {
       card: "بطاقة ائتمانية",
       transfer: "تحويل / دفع إلكتروني",
     },
+
+    // Pagination
+    page: "صفحة",
+    previous: "السابق",
+    next: "التالي",
+    no_data: "لا توجد بيانات",
+    error: "حدث خطأ",
+
     aside: {
       title: "القائمة الرئيسية",
       dashboard: "لوحة التحكم",

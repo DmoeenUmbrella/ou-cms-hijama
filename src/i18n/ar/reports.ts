@@ -48,11 +48,18 @@ export default {
       active_patients: "مرضى نشطون",
       returning_patients: "مرضى عائدون",
       description: "نظرة عامة على تسجيلات المرضى والنشاط",
+      activity_title: "نشاط المرضى",
+      client_id: "رقم العميل",
+      client_name: "اسم العميل",
+      last_session: "آخر جلسة",
+      total_sessions: "الجلسات",
+      total_followups: "المتابعات",
     },
 
     session: {
       title: "إحصائيات الجلسات",
       total_sessions: "إجمالي الجلسات",
+      total_revenue: "إجمالي الإيرادات",
       completed_sessions: "جلسات مكتملة",
       cancelled_sessions: "جلسات ملغاة",
       avg_duration: "متوسط المدة",
@@ -62,6 +69,7 @@ export default {
     followup: {
       title: "إحصائيات المتابعة",
       total_followups: "إجمالي المتابعات",
+      response_rate: "معدل الاستجابة",
       pending_followups: "متابعات معلقة",
       completed_followups: "متابعات مكتملة",
       overdue_followups: "متابعات متأخرة",

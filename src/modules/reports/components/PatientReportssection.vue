@@ -1,41 +1,26 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { Users, UserPlus, UserCheck, RefreshCw } from 'lucide-vue-next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { usePatientReport } from '../composables/patientReport.composable'
+import DashboardCard from '@/components/dashboard/DashboardCard.vue'
+import { Skeleton } from '@/components/ui/skeleton'
+import PatientActivityTable from './PatientActivityTable.vue'
 
-const { t } = useI18n()
-
-// Sample data for demo
-const stats = [
-  {
-    title: 'reports.patient.total_patients',
-    value: '1,248',
-    icon: Users,
-    change: '+12%',
-    changeType: 'positive' as const,
-  },
-  {
-    title: 'reports.patient.new_patients',
-    value: '86',
-    icon: UserPlus,
-    change: '+8%',
-    changeType: 'positive' as const,
-  },
-  {
-    title: 'reports.patient.active_patients',
-    value: '432',
-    icon: UserCheck,
-    change: '+5%',
-    changeType: 'positive' as const,
-  },
-  {
-    title: 'reports.patient.returning_patients',
-    value: '218',
-    icon: RefreshCw,
-    change: '+15%',
-    changeType: 'positive' as const,
-  },
-]
+const {
+  t,
+  isLoading,
+  error,
+  totalClients,
+  activeClients,
+  newClients,
+  retentionRate,
+  // Activity table
+  activityData,
+  activityLoading,
+  activityError,
+  activityPage,
+  hasMoreActivity,
+  goToNextPage,
+  goToPrevPage,
+} = usePatientReport()
 </script>
 
 <template>
@@ -46,25 +31,49 @@ const stats = [
       <p class="text-sm text-muted-foreground">{{ t('reports.patient.description') }}</p>
     </div>
 
-    <!-- Stats Cards Grid -->
-    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Card v-for="stat in stats" :key="stat.title">
-        <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle class="text-sm font-medium">
-            {{ t(stat.title) }}
-          </CardTitle>
-          <component :is="stat.icon" class="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div class="text-2xl font-bold">{{ stat.value }}</div>
-          <p class="text-xs text-muted-foreground">
-            <span :class="stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'">
-              {{ stat.change }}
-            </span>
-            {{ t('reports.kpi.vs_last_month') }}
-          </p>
-        </CardContent>
-      </Card>
+    <!-- Error State -->
+    <div v-if="error" class="p-4 bg-destructive/10 text-destructive rounded-lg">
+      {{ error }}
     </div>
+
+    <!-- Loading State -->
+    <div v-if="isLoading" class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <Skeleton v-for="i in 4" :key="i" class="h-[120px] rounded-lg" />
+    </div>
+
+    <!-- Stats Cards Grid -->
+    <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <DashboardCard 
+        :title="t('reports.patient.total_patients')" 
+        :value="totalClients" 
+        accentColor="indigo" 
+      />
+      <DashboardCard 
+        :title="t('reports.patient.active_patients')" 
+        :value="activeClients" 
+        accentColor="cyan" 
+      />
+      <DashboardCard 
+        :title="t('reports.patient.new_patients')" 
+        :value="newClients" 
+        accentColor="pink" 
+      />
+      <DashboardCard 
+        :title="t('reports.patient.returning_patients')" 
+        :value="`${retentionRate}%`" 
+        accentColor="rose" 
+      />
+    </div>
+
+    <!-- Activity Table -->
+    <PatientActivityTable
+      :data="activityData"
+      :is-loading="activityLoading"
+      :error="activityError"
+      :current-page="activityPage"
+      :has-more="hasMoreActivity"
+      @next-page="goToNextPage"
+      @prev-page="goToPrevPage"
+    />
   </div>
 </template>

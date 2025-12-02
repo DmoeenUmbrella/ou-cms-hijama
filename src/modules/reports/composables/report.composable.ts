@@ -1,6 +1,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useReportStore, type DateRangeType } from "../stores/useReportStore";
+import { storeToRefs } from "pinia";
 
 export interface DateRangeOption {
   value: DateRangeType;
@@ -10,6 +11,9 @@ export interface DateRangeOption {
 export function useReport() {
   const { t, locale } = useI18n();
   const reportStore = useReportStore();
+  
+  // Use storeToRefs for reactive state
+  const { dateFilter, isLoading, dateRange } = storeToRefs(reportStore);
 
   // RTL detection
   const isRTL = computed(() => locale.value === "ar");
@@ -26,17 +30,14 @@ export function useReport() {
   ]);
 
   // Current filter type - with null safety
-  const currentFilterType = computed(() => reportStore.dateFilter?.type ?? 'last30Days');
+  const currentFilterType = computed(() => dateFilter.value?.type ?? 'last30Days');
   
   // Is custom range selected
-  const isCustomRange = computed(() => reportStore.dateFilter?.type === 'customRange');
+  const isCustomRange = computed(() => dateFilter.value?.type === 'customRange');
 
   // Custom date values - with null safety
-  const customStartDate = computed(() => reportStore.dateFilter?.startDate ?? null);
-  const customEndDate = computed(() => reportStore.dateFilter?.endDate ?? null);
-
-  // Computed date range (actual dates)
-  const dateRange = computed(() => reportStore.dateRange);
+  const customStartDate = computed(() => dateFilter.value?.startDate ?? null);
+  const customEndDate = computed(() => dateFilter.value?.endDate ?? null);
 
   // Handlers
   const handleFilterTypeChange = (type: DateRangeType) => {
@@ -53,9 +54,9 @@ export function useReport() {
 
   const handleApplyFilter = () => {
     // This can be used to trigger API calls with the new date range
-    console.log('Applying filter with date range:', reportStore.dateRange);
+    console.log('Applying filter with date range:', dateRange.value);
     // Return the date range for external use
-    return reportStore.dateRange;
+    return dateRange.value;
   };
 
   const resetFilter = () => {
@@ -64,7 +65,7 @@ export function useReport() {
 
   return {
     // State from store
-    isLoading: computed(() => reportStore.isLoading),
+    isLoading,
     
     // Computed
     isRTL,
